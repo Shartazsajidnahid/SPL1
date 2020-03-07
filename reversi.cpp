@@ -1,19 +1,37 @@
 #include<graphics.h>
-#include<process.h>
-#include<dos.h>
 #include<conio.h>
 #include<iostream>
+
+#define black 1
+#define red -1
+
 using namespace std;
+int board[8][8]= {0}, player;
 
-
-main()
+void initial_board()
 {
+    board[3][3] = black;
+    board[4][4] = black;
+    board[3][4] = red;
+    board[4][3] = red;
+    player = black;
+}
+
+
+
+
+int main()
+{
+
+    initial_board();
+
+
     int d,m;
-    int left, top, right, bottom;
+    int left, top, right, bottom, x, y;
 
     d=DETECT;
     initgraph(&d,&m,"c:\\tc\\bgi");
-    while(1){
+
     left = 50;
     top = 50;
     right = 100;
@@ -23,14 +41,11 @@ main()
     {
         left = 50;
         right = 100;
-
         for(int j=0; j<8; j++)
         {
             setfillstyle(SOLID_FILL,GREEN);
             rectangle(left,top,right,bottom);
-
             floodfill((left+25),(top+25),WHITE);
-
             left += 50;
             right += 50;
         }
@@ -39,105 +54,41 @@ main()
         bottom+=50;
     }
 
-    int x, y, p, q, flag = 0;
-
-    x = 75;
-    y = 75;
-
-
-
-
-    char  ch;
-
     while(1)
     {
 
-        setfillstyle(SOLID_FILL,YELLOW);
-        floodfill(x,y,WHITE);
-        p = x;
-        q = y;
-        if(kbhit())  {                                          //check if a key is pressed
-
-            ch=getch();
-
-            if(ch==72)                           //move upward
+        for(int i =0; i<8; i++)
+        {
+            for(int j = 0; j<8; j++)
             {
-                if(y != 75 )
-                    y-=50;
-                setfillstyle(SOLID_FILL,GREEN);
-                floodfill(p,q,WHITE);
-            }
-
-
-            else if(ch==75)          //move left
-            {
-                if(x!=75)
-                    x-=50;
-                setfillstyle(SOLID_FILL,GREEN);
-                floodfill(p,q,WHITE);
-            }
-
-            else if(ch==77)          //move right
-            {
-
-                if(x!=425)
-                    x+=50;
-                setfillstyle(SOLID_FILL,GREEN);
-                floodfill(p,q,WHITE);
-            }
-
-            else if(ch==80)          //move downward
-            {
-                if(y!=425)
-                    y+=50;
-                setfillstyle(SOLID_FILL,GREEN);
-                floodfill(p,q,WHITE);
-            }
-            else if(ch=='f'){
-
-                setfillstyle(SOLID_FILL,GREEN);
-                floodfill(p,q,WHITE);
-
-                setfillstyle(SOLID_FILL, RED);
-                circle(x, y , 20);
-                floodfill(x, y ,WHITE);
-                flag = 0;
-                break;
+                if(board[i][j]==black || board[i][j]== red )
+                {
+                    x=i+1;
+                    y=j+1;
+                    x = (x*50) + 25;
+                    y = (y*50) + 25;
+                    if(board[i][j]==black)
+                    {
+                        setfillstyle(SOLID_FILL, BLACK);
+                        circle(y, x , 20);
+                        floodfill(y,x,WHITE);
+                    }
+                    else if(board[i][j]==red)
+                    {
+                        setfillstyle(SOLID_FILL, RED);
+                        circle(y, x , 20);
+                        floodfill(y,x,WHITE);
+                    }
+                }
             }
         }
-
-
-
+        player = player*(-1);
+        cin >> x >> y;
+        board[x-1][y-1] = player;
 
     }
-        while(1)
-    {
-
-        cin >> x >> y;
-        if(x==0) break;
-
-        x = (x*50) + 25;
-        y = (y*50) + 25;
-
-        setfillstyle(SOLID_FILL, BLACK);
-        circle(y, x , 20);
-        floodfill(y,x,WHITE);
-
-        cin >> x >> y;
-
-        x = (x*50) + 25;
-        y = (y*50) + 25;
-
-
-        setfillstyle(SOLID_FILL, RED);
-        circle(y, x , 20);
-        floodfill(y,x,WHITE);
-    }
-
-
-
-
     getch();
-    cleardevice();
+
+
 }
-}
+
