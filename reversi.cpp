@@ -3,7 +3,7 @@
 #include<iostream>
 
 #define black 1
-#define red -1
+#define red (-1)
 
 using namespace std;
 int board[8][8]= {0}, player;
