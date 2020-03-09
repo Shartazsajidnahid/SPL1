@@ -13,6 +13,7 @@ using namespace std;
 int board[8][8]= {0}, player;
 int playable_direction[8][8][8];
 int game_ended = FALSE;
+int skipped_turn = FALSE;
 int wrong_move = FALSE;
 int has_valid_move = FALSE;
 
@@ -170,7 +171,6 @@ int main()
 
     initial_board();
 
-
     int d,m;
     int left, top, right, bottom, x, y;
 
@@ -224,32 +224,32 @@ int main()
                     if(board[i][j]==black)
                     {
                         setfillstyle(SOLID_FILL, BLACK);
-                        circle(y, x , 20);
-                        floodfill(y,x,WHITE);
+                        circle(x, y , 20);
+                        floodfill(x,y,WHITE);
                     }
                     else if(board[i][j]==red)
                     {   cout << "FOUND RED";
                         setfillstyle(SOLID_FILL, RED);
-                        circle(y, x , 20);
-                        floodfill(y,x,WHITE);
+                        circle(x, y , 20);
+                        floodfill(x,y,WHITE);
                     }
                     else if (board[i][j]==PLAYABLE){
                         x = i+1;
                         y = j+1;
-                        outtextxy((x*50) + 20, (y*50) + 20, "+");
+                        x = (x*50)+25;
+                        y = (y*50)+25;
+                        setfillstyle(SOLID_FILL,YELLOW);
+                        floodfill(y,x,WHITE);
                     }
                 }
                else{
                 x = i+1;
                 y = j+1;
-                left = y*50;
-                right = left+50;
-                top = x*50;
-                bottom = top+50;
+                left = x*50;
+                x = (x*50)+25;
+                y = (y*50)+25;
                 setfillstyle(SOLID_FILL,GREEN);
-                rectangle(left,top,right,bottom);
-
-                floodfill((left+25),(top+25),WHITE);
+                floodfill(y,x,WHITE);
                 }
 
 
