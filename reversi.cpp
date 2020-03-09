@@ -13,7 +13,6 @@ using namespace std;
 int board[8][8]= {0}, player;
 int playable_direction[8][8][8];
 int game_ended = FALSE;
-int skipped_turn = FALSE;
 int wrong_move = FALSE;
 int has_valid_move = FALSE;
 
