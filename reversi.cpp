@@ -1,5 +1,5 @@
 #include<graphics.h>
-#include<conio.h>
+#include<stdio.h>
 #include<iostream>
 
 #define black 1
@@ -11,18 +11,20 @@
 
 using namespace std;
 int board[8][8]= {0}, player;
+int red_score =2, black_score = 2;
 int playable_direction[8][8][8];
 int game_ended = FALSE;
 int skipped_turn = FALSE;
 int wrong_move = FALSE;
 int has_valid_move = FALSE;
 
+
 void initial_board()
 {
-    board[3][3] = black;
-    board[4][4] = black;
-    board[3][4] = red;
-    board[4][3] = red;
+    board[3][3] = red;
+    board[4][4] = red;
+    board[3][4] = black;
+    board[4][3] = black;
     player = black;
 }
 
@@ -41,7 +43,10 @@ int distance( int i1, int j1, int i2, int j2 )
 
 int is_playable( int i, int j )
 {
-    memset( playable_direction[i][j], 0, 8 );
+    //memset( playable_direction[i][j], 0, 8 );
+    for(int x=0; x<8; x++){
+        playable_direction[i][j][x] = 0;
+    }
     if ( !is_valid_position( i, j ) ) return FALSE;
     if ( board[i][j] != EMPTY ) return FALSE;
     int playable = FALSE;
@@ -165,6 +170,119 @@ void mark_playable_positions()
     }
 }
 
+void capture_pieces( int i, int j )
+{
+    int opposing_player = player*(-1);
+    int i_it, j_it;
+
+    // Capture UL diagonal
+    if ( playable_direction[i][j][0] )
+    {
+        i_it = i-1, j_it = j-1;
+        while ( board[i_it][j_it] == opposing_player )
+        {
+            board[i_it][j_it] = player;
+            i_it -= 1;
+            j_it -= 1;
+        }
+    }
+
+    // Capture UP path
+    if ( playable_direction[i][j][1] )
+    {
+        i_it = i-1, j_it = j;
+        while ( board[i_it][j_it] == opposing_player )
+        {
+            board[i_it][j_it] = player;
+            i_it -= 1;
+        }
+    }
+
+    // Capture UR diagonal
+    if ( playable_direction[i][j][2] )
+    {
+        i_it = i-1, j_it = j+1;
+        while ( board[i_it][j_it] == opposing_player )
+        {
+            board[i_it][j_it] = player;
+            i_it -= 1;
+            j_it += 1;
+        }
+    }
+
+    // Capture LEFT path
+    if ( playable_direction[i][j][3] )
+    {
+        i_it = i, j_it = j-1;
+        while ( board[i_it][j_it] == opposing_player )
+        {
+            board[i_it][j_it] = player;
+            j_it -= 1;
+        }
+    }
+
+    // Capture RIGHT path
+    if ( playable_direction[i][j][4] )
+    {
+        i_it = i, j_it = j+1;
+        while ( board[i_it][j_it] == opposing_player )
+        {
+            board[i_it][j_it] = player;
+            j_it += 1;
+        }
+    }
+
+    // Capture DL diagonal
+    if ( playable_direction[i][j][5] )
+    {
+        i_it = i+1, j_it = j-1;
+        while ( board[i_it][j_it] == opposing_player )
+        {
+            board[i_it][j_it] = player;
+            i_it += 1;
+            j_it -= 1;
+        }
+    }
+
+    // Capture DOWN path
+    if ( playable_direction[i][j][6] )
+    {
+        i_it = i+1, j_it = j;
+        while ( board[i_it][j_it] == opposing_player )
+        {
+            board[i_it][j_it] = player;
+            i_it += 1;
+        }
+    }
+
+    // Capture DR diagonal
+    if ( playable_direction[i][j][7] )
+    {
+        i_it = i+1, j_it = j+1;
+        while ( board[i_it][j_it] == opposing_player )
+        {
+            board[i_it][j_it] = player;
+            i_it += 1;
+            j_it += 1;
+        }
+    }
+}
+void make_move( )
+{
+    int row, column;
+    cout << "Enter row (1-8) and column (1-8) separated by a single space (eg.: 2 4).\n";
+    cin >> row >> column;
+    row--;
+    column--;
+    if ( is_valid_position( row, column ) && board[row][column] == PLAYABLE )
+    {
+        board[row][column] = player;
+        capture_pieces( row, column );
+        player = player*(-1);
+    }
+    else wrong_move = TRUE;
+}
+
 
 int main()
 {
@@ -177,12 +295,30 @@ int main()
     d=DETECT;
     initgraph(&d,&m,"c:\\tc\\bgi");
 
+    char str[1];
+    for(int i = 0; i<8; i++)            //printing column numbers
+    {
+        x = i+1;
+        sprintf(str,"%d",x);
+        outtextxy((x*50)+25,25 , str );
+    }
+    for(int i = 0; i<8; i++)            //printing row numbers
+    {
+        x = i+1;
+        sprintf(str,"%d",x);
+        outtextxy(25, (x*50)+20 , str );
+    }
+
+            setfillstyle(SOLID_FILL,RED); //coloring outside the box
+            rectangle(50,50,100,50);
+            floodfill(25,75,WHITE);
+
+
     left = 50;
     top = 50;
     right = 100;
     bottom = 100;
-
-    for(int i=0; i<8; i++)
+    for(int i=0; i<8; i++)              //drawing the empty board 8*8
     {
         left = 50;
         right = 100;
@@ -198,10 +334,13 @@ int main()
         top+=50;
         bottom+=50;
     }
+    outtextxy(500, 175, "RED    : ");
+    outtextxy(500, 200, "BlACK: ");
+
 
     while(1)
     {
-
+        mark_playable_positions();
         for(int i =0; i<8; i++)
         {
             for(int j = 0; j<8; j++)
@@ -210,11 +349,20 @@ int main()
             }
         cout << endl;
         }
+    //showing scores
+        sprintf(str, "%d" , red_score);
+        outtextxy(575, 175 , str );
+        sprintf(str, "%d" , black_score);
+        outtextxy(575, 200 , str );
 
+        red_score = 0;
+        black_score = 0;
         for(int i =0; i<8; i++)
         {
             for(int j = 0; j<8; j++)
             {
+                if(board[i][j]==black) black_score++;
+                if(board[i][j]==red)  red_score++;
                 if(board[i][j]==black || board[i][j]== red || board[i][j] == PLAYABLE)
                 {
                     x=i+1;
@@ -224,14 +372,14 @@ int main()
                     if(board[i][j]==black)
                     {
                         setfillstyle(SOLID_FILL, BLACK);
-                        circle(x, y , 20);
-                        floodfill(x,y,WHITE);
+                        circle(y, x , 17);
+                        floodfill(y,x,WHITE);
                     }
                     else if(board[i][j]==red)
-                    {   cout << "FOUND RED";
+                    {
                         setfillstyle(SOLID_FILL, RED);
-                        circle(x, y , 20);
-                        floodfill(x,y,WHITE);
+                        circle(y, x , 17);
+                        floodfill(y,x,WHITE);
                     }
                     else if (board[i][j]==PLAYABLE){
                         x = i+1;
@@ -242,22 +390,21 @@ int main()
                         floodfill(y,x,WHITE);
                     }
                 }
-               else{
+
+            }
+        }
+        cout << endl << red_score;
+        make_move();
+        for(int i=0; i<8; i++){
+            for(int j=0; j<8; j++){
                 x = i+1;
                 y = j+1;
-                left = x*50;
                 x = (x*50)+25;
                 y = (y*50)+25;
                 setfillstyle(SOLID_FILL,GREEN);
                 floodfill(y,x,WHITE);
-                }
-
-
             }
         }
-        mark_playable_positions();
-        cin >> x>>y;
-        board[x-1][y-1] = EMPTY;
 
        // player = player*(-1);
        // cin >> x >> y;
