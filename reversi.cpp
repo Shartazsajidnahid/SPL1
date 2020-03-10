@@ -3,7 +3,7 @@
 #include<iostream>
 
 #define black 1
-#define red (-1)
+#define white (-1)
 #define PLAYABLE 2
 #define EMPTY 0
 #define TRUE 1
@@ -11,7 +11,7 @@
 
 using namespace std;
 int board[8][8]= {0}, player;
-int red_score =2, black_score = 2;
+int white_score =2, black_score = 2;
 int playable_direction[8][8][8];
 int game_ended = FALSE;
 int skipped_turn = FALSE;
@@ -21,11 +21,11 @@ int has_valid_move = FALSE;
 
 void initial_board()
 {
-    board[3][3] = red;
-    board[4][4] = red;
+    board[3][3] = white;
+    board[4][4] = white;
     board[3][4] = black;
     board[4][3] = black;
-    player = black;
+    player = white;
 }
 
 int is_valid_position( int i, int j )
@@ -309,9 +309,6 @@ int main()
         outtextxy(25, (x*50)+20 , str );
     }
 
-            setfillstyle(SOLID_FILL,RED); //coloring outside the box
-            rectangle(50,50,100,50);
-            floodfill(25,75,WHITE);
 
 
     left = 50;
@@ -324,6 +321,7 @@ int main()
         right = 100;
         for(int j=0; j<8; j++)
         {
+            setcolor(WHITE);
             setfillstyle(SOLID_FILL,GREEN);
             rectangle(left,top,right,bottom);
             floodfill((left+25),(top+25),WHITE);
@@ -350,15 +348,15 @@ int main()
             }
         cout << endl;
         }
-        red_score = 0;
+        white_score = 0;
         black_score = 0;
         for(int i =0; i<8; i++)
         {
             for(int j = 0; j<8; j++)
             {
                 if(board[i][j]==black) black_score++;
-                if(board[i][j]==red)  red_score++;
-                if(board[i][j]==black || board[i][j]== red || board[i][j] == PLAYABLE)
+                if(board[i][j]==white)  white_score++;
+                if(board[i][j]==black || board[i][j]== white || board[i][j] == PLAYABLE)
                 {
                     x=i+1;
                     y=j+1;
@@ -366,22 +364,24 @@ int main()
                     y = (y*50) + 25;
                     if(board[i][j]==black)
                     {
+                        setcolor(LIGHTGRAY);
                         setfillstyle(SOLID_FILL, BLACK);
                         circle(y, x , 17);
-                        floodfill(y,x,WHITE);
+                        floodfill(y,x,LIGHTGRAY);
                     }
-                    else if(board[i][j]==red)
+                    else if(board[i][j]==white)
                     {
-                        setfillstyle(SOLID_FILL, RED);
+                        setcolor(LIGHTGRAY);
+                        setfillstyle(SOLID_FILL, WHITE);
                         circle(y, x , 17);
-                        floodfill(y,x,WHITE);
+                        floodfill(y,x,LIGHTGRAY);
                     }
                     else if (board[i][j]==PLAYABLE){
                         x = i+1;
                         y = j+1;
                         x = (x*50)+25;
                         y = (y*50)+25;
-                        setfillstyle(SOLID_FILL,YELLOW);
+                        setfillstyle(SOLID_FILL,LIGHTGREEN);
                         floodfill(y,x,WHITE);
                     }
                 }
@@ -390,9 +390,9 @@ int main()
         }
 
         //showing scores
-        outtextxy(475, 175, "RED    : ");
+        outtextxy(475, 175, "WHITE: ");
         outtextxy(475, 200, "BLACK: ");
-        sprintf(str, "%d" , red_score);
+        sprintf(str, "%d" , white_score);
         outtextxy(550, 175 , str );
         sprintf(str, "%d" , black_score);
         outtextxy(550, 200 , str );
@@ -400,21 +400,20 @@ int main()
         //showing player turn
         outtextxy(475, 275, "PLAYER : ");
         if(player==black){
+        setcolor(DARKGRAY);
         setfillstyle(SOLID_FILL, BLACK);
         circle(580, 283 , 17);
-        floodfill(580, 283,WHITE);
+        floodfill(580, 283,DARKGRAY);
         }
         else{
-        setfillstyle(SOLID_FILL, RED);
+        setcolor(DARKGRAY);
+        setfillstyle(SOLID_FILL, WHITE);
         circle(580, 283 , 17);
-        floodfill(580, 283,WHITE);
+        floodfill(580, 283,DARKGRAY);
         }
 
-
-
-
-        cout << endl << red_score;
         make_move();
+        //clearing board for new entries
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
                 x = i+1;
