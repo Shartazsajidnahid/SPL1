@@ -334,13 +334,14 @@ int main()
         top+=50;
         bottom+=50;
     }
-    outtextxy(500, 175, "RED    : ");
-    outtextxy(500, 200, "BlACK: ");
+
 
 
     while(1)
     {
+
         mark_playable_positions();
+
         for(int i =0; i<8; i++)
         {
             for(int j = 0; j<8; j++)
@@ -349,12 +350,6 @@ int main()
             }
         cout << endl;
         }
-    //showing scores
-        sprintf(str, "%d" , red_score);
-        outtextxy(575, 175 , str );
-        sprintf(str, "%d" , black_score);
-        outtextxy(575, 200 , str );
-
         red_score = 0;
         black_score = 0;
         for(int i =0; i<8; i++)
@@ -393,6 +388,31 @@ int main()
 
             }
         }
+
+        //showing scores
+        outtextxy(475, 175, "RED    : ");
+        outtextxy(475, 200, "BLACK: ");
+        sprintf(str, "%d" , red_score);
+        outtextxy(550, 175 , str );
+        sprintf(str, "%d" , black_score);
+        outtextxy(550, 200 , str );
+
+        //showing player turn
+        outtextxy(475, 275, "PLAYER : ");
+        if(player==black){
+        setfillstyle(SOLID_FILL, BLACK);
+        circle(580, 283 , 17);
+        floodfill(580, 283,WHITE);
+        }
+        else{
+        setfillstyle(SOLID_FILL, RED);
+        circle(580, 283 , 17);
+        floodfill(580, 283,WHITE);
+        }
+
+
+
+
         cout << endl << red_score;
         make_move();
         for(int i=0; i<8; i++){
