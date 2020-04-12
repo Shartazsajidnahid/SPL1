@@ -88,7 +88,7 @@ char str[1];
                     else if(board[i][j].value==white)
                     {
                         setcolor(LIGHTGRAY);
-                        setfillstyle(SOLID_FILL,RED);
+                        setfillstyle(SOLID_FILL,WHITE);
                         circle(y, x , 17);
                         floodfill(y,x,LIGHTGRAY);
                     }
@@ -405,10 +405,13 @@ void make_move( )
                 floodfill(p,q,LIGHTGRAY);
             }
         else if(board[n][m].value==white){
-                setcolor(LIGHTGRAY);
+               /* setcolor(LIGHTGRAY);
                 setfillstyle(SOLID_FILL,RED);
                 circle(p, q, 17);
                 floodfill(p,q,LIGHTGRAY);
+            */
+                setfillstyle(SOLID_FILL,YELLOW);
+                floodfill(x-20 ,y-20,WHITE);
             }
         else if(board[n][m].value==PLAYABLE){
 
@@ -467,11 +470,14 @@ void make_move( )
                 floodfill(p,q,LIGHTGRAY);
             }
             else if(board[n][m].value==white){
-                setcolor(LIGHTGRAY);
+               /* setcolor(LIGHTGRAY);
                 setfillstyle(SOLID_FILL, RED);
 
                 circle(p, q , 17);
                 floodfill(p,q,LIGHTGRAY);
+                */
+                setfillstyle(SOLID_FILL,GREEN);
+                floodfill(p-20 ,q-20,WHITE);
             }
             else if(board[n][m].value==PLAYABLE){
 
