@@ -27,7 +27,7 @@ void drawboard(){
 int left, top, right, bottom, x, y;
 char str[1];
 
-    setfillstyle(SOLID_FILL,RED); //coloring outside the box
+    setfillstyle(SOLID_FILL,GREEN); //coloring outside the box
     rectangle(50,50,100,50);
     floodfill(25,75,WHITE);
 
@@ -93,17 +93,10 @@ char str[1];
                         floodfill(y,x,LIGHTGRAY);
                     }
                     else if (board[i][j].value==PLAYABLE){
-                        x = i+1;
-                        y = j+1;
-                        x = (x*50)+25;
-                        y = (y*50)+25;
-                        setcolor(LIGHTGRAY);
-                        setfillstyle(SOLID_FILL, LIGHTGRAY);
-                        circle(y, x , 17);
-                        floodfill(y,x,LIGHTGRAY);
-
+                        setcolor(WHITE);
+                        setfillstyle(SOLID_FILL, GREEN);
                         outtextxy(y-5, x-10, "+");
-
+                        floodfill(y-5,x-10,WHITE);
                     }
                 }
 
@@ -396,31 +389,36 @@ void make_move( )
         n = (q-25)/50;
         m--; n--;
         //cout << m << n;
-        setfillstyle(SOLID_FILL,YELLOW);
-        floodfill(x,y,WHITE);
+
         if(board[n][m].value==black){
                 setcolor(LIGHTGRAY);
                 setfillstyle(SOLID_FILL, BLACK);
                 circle(p, q , 17);
                 floodfill(p,q,LIGHTGRAY);
+                setfillstyle(SOLID_FILL,YELLOW);
+                floodfill(x-20 ,y-20,WHITE);
+
             }
         else if(board[n][m].value==white){
-               /* setcolor(LIGHTGRAY);
-                setfillstyle(SOLID_FILL,RED);
+                setcolor(BLACK);
+                setfillstyle(SOLID_FILL,WHITE);
                 circle(p, q, 17);
-                floodfill(p,q,LIGHTGRAY);
-            */
+                floodfill(p,q,BLACK);
+
                 setfillstyle(SOLID_FILL,YELLOW);
                 floodfill(x-20 ,y-20,WHITE);
             }
         else if(board[n][m].value==PLAYABLE){
-
-                setcolor(LIGHTGRAY);
-                setfillstyle(SOLID_FILL, LIGHTGRAY);
-                circle(p,q, 17);
-                floodfill(p,q,LIGHTGRAY);
-
+                setfillstyle(SOLID_FILL,YELLOW);
+                floodfill(x-20 ,y-20,WHITE);
+                setcolor(WHITE);
+                setfillstyle(SOLID_FILL, GREEN);
                 outtextxy(p-5, q-10, "+");
+                floodfill(p-5,q-10,WHITE);
+        }
+        else{
+        setfillstyle(SOLID_FILL,YELLOW);
+        floodfill(x,y,WHITE);
         }
 
         if(kbhit()) {                                          //check if a key is pressed
@@ -459,9 +457,6 @@ void make_move( )
             setfillstyle(SOLID_FILL,GREEN);
             floodfill(p,q,WHITE);
             if((ch==80)|| (ch==77)|| (ch==72)|| (ch==75)){
-
-
-
             if(board[n][m].value==black){
                 setcolor(LIGHTGRAY);
                 setfillstyle(SOLID_FILL, BLACK);
@@ -472,7 +467,6 @@ void make_move( )
             else if(board[n][m].value==white){
                /* setcolor(LIGHTGRAY);
                 setfillstyle(SOLID_FILL, RED);
-
                 circle(p, q , 17);
                 floodfill(p,q,LIGHTGRAY);
                 */
@@ -481,12 +475,12 @@ void make_move( )
             }
             else if(board[n][m].value==PLAYABLE){
 
-                setcolor(LIGHTGRAY);
-                setfillstyle(SOLID_FILL, LIGHTGRAY);
-                circle(p, q , 17);
-                floodfill(p,q,LIGHTGRAY);
 
+                setcolor(WHITE);
+                setfillstyle(SOLID_FILL, GREEN);
                 outtextxy(p-5, q-10, "+");
+                floodfill(p-5,q-10,WHITE);
+
             }
         }
         }
@@ -527,4 +521,3 @@ int main()
 
     getch();
 }
-
