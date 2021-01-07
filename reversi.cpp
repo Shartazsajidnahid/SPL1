@@ -11,7 +11,8 @@ using namespace std;
 #define TRUE 1
 #define FALSE 0
 
-struct Board{
+struct Board
+{
     int up,down,right,left,ul,ur,dl,dr, value;
 };
 struct Board board[8][8];
@@ -23,11 +24,12 @@ int skipped_turn = FALSE;
 int wrong_move = FALSE;
 int has_valid_move = FALSE;
 
-void drawboard(){
-int left, top, right, bottom, x, y;
-char str[1];
+void drawboard()
+{
+    int left, top, right, bottom, x, y;
+    char str[1];
 
-    setfillstyle(SOLID_FILL,GREEN); //coloring outside the box
+    setfillstyle(SOLID_FILL,RED); //coloring outside the BLUE
     rectangle(50,50,100,50);
     floodfill(25,75,WHITE);
 
@@ -48,11 +50,9 @@ char str[1];
             left += 50;
             right += 50;
         }
-
         top+=50;
         bottom+=50;
     }
-
 
     for(int i =0; i<8; i++)
     {
@@ -61,75 +61,79 @@ char str[1];
             cout << board[i][j].value << "  ";
         }
         cout << endl;
-        }
-        cout << endl<< endl;
-        white_score = 0;
-        black_score = 0;
-        for(int i =0; i<8; i++)
+    }
+    cout << endl<< endl;
+    white_score = 0;
+    black_score = 0;
+    for(int i =0; i<8; i++)
+    {
+        for(int j = 0; j<8; j++)
         {
-            for(int j = 0; j<8; j++)
+            if(board[i][j].value==black) black_score++;
+            if(board[i][j].value==white)  white_score++;
+            if(board[i][j].value==black || board[i][j].value== white || board[i][j].value == PLAYABLE)
             {
-                if(board[i][j].value==black) black_score++;
-                if(board[i][j].value==white)  white_score++;
-                if(board[i][j].value==black || board[i][j].value== white || board[i][j].value == PLAYABLE)
+                x=i+1;
+                y=j+1;
+                x = (x*50) + 25;
+                y = (y*50) + 25;
+                if(board[i][j].value==black)
                 {
-                    x=i+1;
-                    y=j+1;
-                    x = (x*50) + 25;
-                    y = (y*50) + 25;
-                    if(board[i][j].value==black)
-                    {
-                        setcolor(LIGHTGRAY);
-                        setfillstyle(SOLID_FILL, BLACK);
+                    setcolor(LIGHTGRAY);
+                    setfillstyle(SOLID_FILL, BLACK);
 
-                        circle(y, x , 17);
-                        floodfill(y,x,LIGHTGRAY);
-                    }
-                    else if(board[i][j].value==white)
-                    {
-                        setcolor(LIGHTGRAY);
-                        setfillstyle(SOLID_FILL,WHITE);
-                        circle(y, x , 17);
-                        floodfill(y,x,LIGHTGRAY);
-                    }
-                    else if (board[i][j].value==PLAYABLE){
-                        setcolor(WHITE);
-                        setfillstyle(SOLID_FILL, GREEN);
-                        outtextxy(y-5, x-10, "+");
-                        floodfill(y-5,x-10,WHITE);
-                    }
+                    circle(y, x , 17);
+                    floodfill(y,x,LIGHTGRAY);
                 }
-
+                else if(board[i][j].value==white)
+                {
+                    setcolor(LIGHTGRAY);
+                    setfillstyle(SOLID_FILL,WHITE);
+                    circle(y, x , 17);
+                    floodfill(y,x,LIGHTGRAY);
+                }
+                else if (board[i][j].value==PLAYABLE)
+                {
+                    setcolor(WHITE);
+                    setfillstyle(SOLID_FILL, GREEN);
+                    outtextxy(y-5, x-10, "+");
+                    floodfill(y-5,x-10,WHITE);
+                }
             }
+
         }
+    }
 
-        //showing scores
-        outtextxy(475, 175, "WHITE: ");
-        outtextxy(475, 200, "BLACK: ");
-        sprintf(str, "%d" , white_score);
-        outtextxy(550, 175 , str );
-        sprintf(str, "%d" , black_score);
-        outtextxy(550, 200 , str );
+    //showing scores
+    outtextxy(475, 175, "WHITE: ");
+    outtextxy(475, 200, "BLACK: ");
+    sprintf(str, "%d" , white_score);
+    outtextxy(550, 175 , str );
+    sprintf(str, "%d" , black_score);
+    outtextxy(550, 200 , str );
 
-        //showing player turn
-        outtextxy(475, 275, "PLAYER : ");
-        if(player==black){
+    //showing player turn
+    outtextxy(475, 275, "PLAYER : ");
+    if(player==black)
+    {
         setcolor(DARKGRAY);
         setfillstyle(SOLID_FILL, BLACK);
         circle(580, 283 , 17);
         floodfill(580, 283,DARKGRAY);
-        }
-        else{
+    }
+    else
+    {
         setcolor(DARKGRAY);
         setfillstyle(SOLID_FILL, WHITE);
         circle(580, 283 , 17);
         floodfill(580, 283,DARKGRAY);
-        }
+    }
 
 }
 void initial_board()
 {
-    for(int i=0; i<8; i++){
+    for(int i=0; i<8; i++)
+    {
         for(int j=0; j<8; j++)
             board[i][j].value = 0;
     }
@@ -137,7 +141,7 @@ void initial_board()
     board[3][4].value = black;
     board[4][4].value = white;
     board[3][3].value = white;
-    player = white;
+    player = black;
 }
 
 int is_valid_position( int i, int j )
@@ -261,7 +265,7 @@ int is_playable( int i, int j )
 }
 
 
-void mark_playable_positions()
+void playable_options()
 {
     has_valid_move = FALSE;
     for ( int i=0; i<8; ++i )
@@ -376,8 +380,32 @@ void capture_pieces( int i, int j )
         }
     }
 }
+
+void turn_white_plus_into_green()
+{
+    int x, y;
+    for(int i =0; i<8; i++)
+    {
+        for(int j = 0; j<8; j++)
+        {
+            if( board[i][j].value == PLAYABLE)
+            {
+                x=i+1;
+                y=j+1;
+                x = (x*50) + 25;
+                y = (y*50) + 25;
+                setcolor(GREEN);
+                setfillstyle(SOLID_FILL, GREEN);
+                outtextxy(y-5, x-10, "+");
+                floodfill(y-5,x-10,GREEN);
+            }
+
+        }
+    }
+}
 void make_move( )
-{   int x = 75, y = 75, p, q, m, n;
+{
+    int x = 275, y = 275, p, q, m, n;
     int row, column;
 
     char ch;
@@ -387,41 +415,47 @@ void make_move( )
         q = y;
         m = (p-25)/50;
         n = (q-25)/50;
-        m--; n--;
+        m--;
+        n--;
         //cout << m << n;
 
-        if(board[n][m].value==black){
-                setcolor(LIGHTGRAY);
-                setfillstyle(SOLID_FILL, BLACK);
-                circle(p, q , 17);
-                floodfill(p,q,LIGHTGRAY);
-                setfillstyle(SOLID_FILL,YELLOW);
-                floodfill(x-20 ,y-20,WHITE);
+        if(board[n][m].value==black)
+        {
+            setcolor(LIGHTGRAY);
+            setfillstyle(SOLID_FILL, BLACK);
+            circle(p, q , 17);
+            floodfill(p,q,LIGHTGRAY);
+            setfillstyle(SOLID_FILL,YELLOW);
+            floodfill(x-20 ,y-20,WHITE);
 
-            }
-        else if(board[n][m].value==white){
-                setcolor(BLACK);
-                setfillstyle(SOLID_FILL,WHITE);
-                circle(p, q, 17);
-                floodfill(p,q,BLACK);
-
-                setfillstyle(SOLID_FILL,YELLOW);
-                floodfill(x-20 ,y-20,WHITE);
-            }
-        else if(board[n][m].value==PLAYABLE){
-                setfillstyle(SOLID_FILL,YELLOW);
-                floodfill(x-20 ,y-20,WHITE);
-                setcolor(WHITE);
-                setfillstyle(SOLID_FILL, GREEN);
-                outtextxy(p-5, q-10, "+");
-                floodfill(p-5,q-10,WHITE);
         }
-        else{
-        setfillstyle(SOLID_FILL,YELLOW);
-        floodfill(x,y,WHITE);
+        else if(board[n][m].value==white)
+        {
+            setcolor(BLACK);
+            setfillstyle(SOLID_FILL,WHITE);
+            circle(p, q, 17);
+            floodfill(p,q,BLACK);
+
+            setfillstyle(SOLID_FILL,YELLOW);
+            floodfill(x-20 ,y-20,WHITE);
+        }
+        else if(board[n][m].value==PLAYABLE)
+        {
+            setfillstyle(SOLID_FILL,YELLOW);
+            floodfill(x-20 ,y-20,WHITE);
+            setcolor(WHITE);
+            setfillstyle(SOLID_FILL, GREEN);
+            outtextxy(p-5, q-10, "+");
+            floodfill(p-5,q-10,WHITE);
+        }
+        else
+        {
+            setfillstyle(SOLID_FILL,YELLOW);
+            floodfill(x,y,WHITE);
         }
 
-        if(kbhit()) {                                          //check if a key is pressed
+        if(kbhit())                                            //check if a key is pressed
+        {
 
             ch=getch();
 
@@ -448,41 +482,47 @@ void make_move( )
                 if(y!=425)
                     y+=50;
             }
-            else if(ch=='f'){
+            else if(ch=='f')
+            {
 
-            cout << endl << " p = " << p << " q =" << q << " m =" << m << " n =" << n << endl;
+                cout << endl << " p = " << p << " q =" << q << " m =" << m << " n =" << n << endl;
                 if(board[n][m].value ==PLAYABLE)
-                break;
+                {
+                    turn_white_plus_into_green();
+                    break;
+                }
+
             }
             setfillstyle(SOLID_FILL,GREEN);
             floodfill(p,q,WHITE);
-            if((ch==80)|| (ch==77)|| (ch==72)|| (ch==75)){
-            if(board[n][m].value==black){
-                setcolor(LIGHTGRAY);
-                setfillstyle(SOLID_FILL, BLACK);
+            if((ch==80)|| (ch==77)|| (ch==72)|| (ch==75))
+            {
+                if(board[n][m].value==black)
+                {
+                    setcolor(LIGHTGRAY);
+                    setfillstyle(SOLID_FILL, BLACK);
 
-                circle(p, q , 17);
-                floodfill(p,q,LIGHTGRAY);
+                    circle(p, q , 17);
+                    floodfill(p,q,LIGHTGRAY);
+                }
+                else if(board[n][m].value==white)
+                {
+                    /* setcolor(LIGHTGRAY);
+                     setfillstyle(SOLID_FILL, RED);
+                     circle(p, q , 17);
+                     floodfill(p,q,LIGHTGRAY);
+                     */
+                    setfillstyle(SOLID_FILL,GREEN);
+                    floodfill(p-20 ,q-20,WHITE);
+                }
+                else if(board[n][m].value==PLAYABLE)
+                {
+                    setcolor(WHITE);
+                    setfillstyle(SOLID_FILL, GREEN);
+                    outtextxy(p-5, q-10, "+");
+                    floodfill(p-5,q-10,WHITE);
+                }
             }
-            else if(board[n][m].value==white){
-               /* setcolor(LIGHTGRAY);
-                setfillstyle(SOLID_FILL, RED);
-                circle(p, q , 17);
-                floodfill(p,q,LIGHTGRAY);
-                */
-                setfillstyle(SOLID_FILL,GREEN);
-                floodfill(p-20 ,q-20,WHITE);
-            }
-            else if(board[n][m].value==PLAYABLE){
-
-
-                setcolor(WHITE);
-                setfillstyle(SOLID_FILL, GREEN);
-                outtextxy(p-5, q-10, "+");
-                floodfill(p-5,q-10,WHITE);
-
-            }
-        }
         }
     }
     row = (y-25)/50;
@@ -497,8 +537,19 @@ void make_move( )
         player = player*(-1);
     }
     else wrong_move = TRUE;
-}
 
+
+}
+void display_winner( )
+{
+    printf( "Final score:\n%s: %d %s: %d\n", "white", white_score, "black", black_score );
+    if ( white_score > black_score )
+        printf( "%s wins.\n", "white" );
+    else if ( white_score < black_score )
+        printf( "%s wins.\n",  "black" );
+    else
+        printf( "Draw game.\n" );
+}
 
 int main()
 {
@@ -510,14 +561,29 @@ int main()
     initgraph(&d,&m,"c:\\tc\\bgi");
     //initwindow(getmaxwidth()/2, getmaxheight()/1.5, "Full screen window - press a key to close");
 
-    while(1){
-        mark_playable_positions();
-        drawboard();
-        make_move();
+    while ( !game_ended )
+    {
+        playable_options();
+        if ( !has_valid_move )
+        {
+            if ( skipped_turn )
+            {
+                game_ended = 1;
+                drawboard( );
+                continue;
+            }
+            skipped_turn = 1;
+            player=player*-1;
+        }
+        else
+        {
+            skipped_turn = 0;
+            drawboard( );
+            make_move( );
+        }
+
     }
-
-        //clearing board for new entries
-
+    display_winner( );
 
     getch();
 }
