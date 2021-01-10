@@ -146,7 +146,7 @@ void initial_board()
     board[3][4].value = black;
     board[4][4].value = white;
     board[3][3].value = white;
-    player = black;
+    player = white;
 }
 
 int is_valid_position( int i, int j )
@@ -559,12 +559,106 @@ void display_winner( )
         printf( "Draw game.\n" );
 }
 
+int count_flippable_pieces(int i, int j){
+    int opposing_player = player*(-1);
+    int i_it, j_it , total_flippable_piece=0;
+
+    if ( board[i][j].ul )
+    {
+        i_it = i-1, j_it = j-1;
+        while ( board[i_it][j_it].value == opposing_player )
+        {
+            total_flippable_piece++;
+            i_it -= 1;
+            j_it -= 1;
+        }
+    }
+    if ( board[i][j].up )
+    {
+        i_it = i-1, j_it = j;
+        while ( board[i_it][j_it].value == opposing_player )
+        {
+            total_flippable_piece++;
+            i_it -= 1;
+        }
+    }
+
+    if ( board[i][j].ur )
+    {
+        i_it = i-1, j_it = j+1;
+        while ( board[i_it][j_it].value == opposing_player )
+        {
+            total_flippable_piece++;
+            i_it -= 1;
+            j_it += 1;
+        }
+    }
+
+    if ( board[i][j].left )
+    {
+        i_it = i, j_it = j-1;
+        while ( board[i_it][j_it].value == opposing_player )
+        {
+            total_flippable_piece++;
+            j_it -= 1;
+        }
+    }
+
+    if ( board[i][j].right )
+    {
+        i_it = i, j_it = j+1;
+        while ( board[i_it][j_it].value == opposing_player )
+        {
+            total_flippable_piece++;
+            j_it += 1;
+        }
+    }
+
+    if ( board[i][j].dl )
+    {
+        i_it = i+1, j_it = j-1;
+        while ( board[i_it][j_it].value == opposing_player )
+        {
+            total_flippable_piece++;
+            i_it += 1;
+            j_it -= 1;
+        }
+    }
+
+    if ( board[i][j].down )
+    {
+        i_it = i+1, j_it = j;
+        while ( board[i_it][j_it].value == opposing_player )
+        {
+            total_flippable_piece++;
+            i_it += 1;
+        }
+    }
+
+    if ( board[i][j].dr )
+    {
+        i_it = i+1, j_it = j+1;
+        while ( board[i_it][j_it].value == opposing_player )
+        {
+            total_flippable_piece++;
+            i_it += 1;
+            j_it += 1;
+        }
+    }
+
+    return total_flippable_piece;
+}
+
+
 void easy_ai(){
     int min = 10000, row = -1, col = -1;
     for(int i=0;i<8; i++){
         for(int j=0;j<8;j++){
             if(board[i][j].value==PLAYABLE){
+                cout << " HEY ";
                 int x = count_flippable_pieces(i,j);
+
+                cout << "x = " << x << endl;
 
                 if(x<min){
                     min = x;
@@ -576,10 +670,10 @@ void easy_ai(){
     }
     cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
 
-    turn_white_plus_into_green();
+  /*  turn_white_plus_into_green();
     board[row][col].value = player;
     capture_pieces( row,  column );
-    player = player*(-1);
+    player = player*(-1); */
 
 
 }
