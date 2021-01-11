@@ -488,7 +488,6 @@ void make_move( )
                 cout << endl << " p = " << p << " q =" << q << " m =" << m << " n =" << n << endl;
                 if(board[n][m].value ==PLAYABLE)
                 {
-                    turn_white_plus_into_green();
                     break;
                 }
 
@@ -537,6 +536,7 @@ void make_move( )
         player = player*(-1);
     }
     else wrong_move = TRUE;
+    turn_white_plus_into_green();
 
 
 }
@@ -663,10 +663,9 @@ void easy_ai(){
     }
     cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
 
-  /*  turn_white_plus_into_green();
-    board[row][col].value = player;
-    capture_pieces( row,  column );
-    player = player*(-1); */
+    board[row][col].value = player;    capture_pieces( row,  col );
+    player = player*(-1);
+   turn_white_plus_into_green();
 
 
 }
