@@ -63,10 +63,8 @@ void drawboard()
         cout << endl;
     }
     cout << endl<< endl;
-
     white_score = 0;
     black_score = 0;
-
     for(int i =0; i<8; i++)
     {
         for(int j = 0; j<8; j++)
@@ -107,7 +105,6 @@ void drawboard()
     }
 
     //showing scores
-
     outtextxy(475, 175, "WHITE: ");
     outtextxy(475, 200, "BLACK: ");
     sprintf(str, "%d" , white_score);
@@ -116,7 +113,6 @@ void drawboard()
     outtextxy(550, 200 , str );
 
     //showing player turn
-
     outtextxy(475, 275, "PLAYER : ");
     if(player==black)
     {
@@ -134,7 +130,6 @@ void drawboard()
     }
 
 }
-
 void initial_board()
 {
     for(int i=0; i<8; i++)
@@ -146,7 +141,7 @@ void initial_board()
     board[3][4].value = black;
     board[4][4].value = white;
     board[3][3].value = white;
-    player = white;
+    player = black;
 }
 
 int is_valid_position( int i, int j )
@@ -165,9 +160,8 @@ int distance( int i1, int j1, int i2, int j2 )
 int is_playable( int i, int j )
 {
     board[i][j].up = board[i][j].down = board[i][j].right = board[i][j].left =board[i][j].ul =board[i][j].ur =board[i][j].dl =board[i][j].dr= 0;
-
     if ( !is_valid_position( i, j ) ) return FALSE;
-    if ( board[i][j].value != EMPTY ) return FALSE; //there's a piece already
+    if ( board[i][j].value != EMPTY ) return FALSE;
     int playable = FALSE;
 
     int opposing_player = player*(-1);
@@ -274,14 +268,12 @@ int is_playable( int i, int j )
 void playable_options()
 {
     has_valid_move = FALSE;
-
     for ( int i=0; i<8; ++i )
     {
         for ( int j=0; j<8; ++j )
         {
             if ( board[i][j].value == PLAYABLE )
-                board[i][j].value = EMPTY; //erasing previous players playable options
-
+                board[i][j].value = EMPTY;
             if ( is_playable( i, j ) )
             {
                 board[i][j].value = PLAYABLE;
@@ -541,7 +533,7 @@ void make_move( )
     if ( is_valid_position( row, column ) && board[row][column].value == PLAYABLE )
     {
         board[row][column].value = player;
-        capture_pieces( row,  column );
+        capture_pieces( row, column );
         player = player*(-1);
     }
     else wrong_move = TRUE;
@@ -558,7 +550,6 @@ void display_winner( )
     else
         printf( "Draw game.\n" );
 }
-
 int count_flippable_pieces(int i, int j){
     int opposing_player = player*(-1);
     int i_it, j_it , total_flippable_piece=0;
@@ -651,19 +642,21 @@ int count_flippable_pieces(int i, int j){
 
 
 void easy_ai(){
-    int min = 10000, row = -1, col = -1;
+
+    int min = 10000, row = -1, col = -1, x = 10000;
+
     for(int i=0;i<8; i++){
         for(int j=0;j<8;j++){
             if(board[i][j].value==PLAYABLE){
                 cout << " HEY ";
-                int x = count_flippable_pieces(i,j);
+                x = count_flippable_pieces(i,j);
 
-                cout << "x = " << x << endl;
+                cout << "row: " << i << "  column: " << j << " x = " << x << endl;
 
                 if(x<min){
                     min = x;
                     row = i;
-                    col = i;
+                    col = j;
                 }
             }
         }
@@ -677,7 +670,6 @@ void easy_ai(){
 
 
 }
-
 int main()
 {
     initial_board();
@@ -706,7 +698,7 @@ int main()
         {
             skipped_turn = 0;
             drawboard( );
-            if(player==white) make_move();
+            if(player==black) make_move();
             else easy_ai();
         }
 
@@ -715,3 +707,4 @@ int main()
 
     getch();
 }
+
