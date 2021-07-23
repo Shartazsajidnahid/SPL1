@@ -1,4 +1,5 @@
-
+void computer_mode_menu();
+void menu();
 
 #define PAGE_UP     73
 #define HOME        71
@@ -749,9 +750,78 @@ void easy_mode(){
            // break;
 
     }
-    display_winner( );
+    display_winner();
 }
 
+
+
+void computer_mode_menu_input(){
+    char ch;
+
+    while(1)
+    {
+
+
+        if(kbhit())                                            //check if a key is pressed
+        {
+
+            ch=getch();
+
+            if(ch==59)   // 1 player
+            {
+                cleardevice();
+                easy_mode();
+            }
+            else if(ch==60)  // 2 player menu
+            {
+                cleardevice();
+
+                computer_mode_menu();
+
+            }
+            else if(ch==61)  // 2 player menu
+            {
+                cleardevice();
+
+                computer_mode_menu();
+
+            }
+
+            else if(ch==27)
+            {
+
+               cleardevice();
+               menu();
+
+            }
+
+
+
+
+        }
+    }
+
+}
+
+void computer_mode_menu()
+{
+
+
+    for(int i=0;i<10;i++)
+	rectangle(110-i,150-i,580+i,430+i);
+
+
+    setcolor(YELLOW);
+	//settextstyle(EUROPEAN_FONT,HORIZ_DIR,4);
+	outtextxy(240,200,"EASY");
+	outtextxy(240,260,"MEDIUM");
+	outtextxy(240,320,"HARD");
+	outtextxy(240,380,"BACK TO MENU");
+
+	computer_mode_menu_input();
+
+
+}
 
 void menuinput(){
     char ch;
@@ -765,17 +835,20 @@ void menuinput(){
 
             ch=getch();
 
-            if(ch==59)
+            if(ch==59)   // 1 player
             {
                 cleardevice();
                 easy_mode();
             }
-            else if(ch==60)
+            else if(ch==60)  // 2 player menu
             {
+                cleardevice();
+
+                computer_mode_menu();
 
             }
 
-            else if(ch==61)
+            else if(ch==27)
             {
 
                exit(1);
@@ -789,8 +862,6 @@ void menuinput(){
     }
 
 }
-
-
 void menu()
 {
 
@@ -815,22 +886,12 @@ void menu()
 int main()
 {
 
-
-
-
-
-
     int d,m;
 
     d=DETECT;
 
     initgraph(&d,&m,"Reversi");
     menu();
-
-
-
-
-
 
     getch();
 }
