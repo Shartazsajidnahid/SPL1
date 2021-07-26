@@ -689,6 +689,57 @@ int count_flippable_pieces(int i, int j){
     return total_flippable_piece;
 }
 
+void exit_menu_input(){
+    char ch;
+
+    while(1)
+    {
+
+
+        if(kbhit())                                            //check if a key is pressed
+        {
+
+            ch=getch();
+
+            if(ch=='y' || ch == 'Y')
+            {
+                exit(1);
+            }
+            else if(ch=='n' || ch == 'N')  // 1 player menu
+            {
+                cleardevice();
+                menu();
+
+            }
+
+
+
+        }
+    }
+}
+void exit_menu(){
+    cleardevice();
+
+    setcolor(LIGHTGRAY);
+    for(int i=0;i<7;i++)
+	rectangle(110-i,120-i,450+i,350+i);
+
+    outtextxy(180,180,"DO  YOU  WANT  TO  QUIT  ?");
+
+    for(int i=0;i<2;i++)
+        rectangle(215-i,215-i,253+i,240+i);
+
+	outtextxy(220,220,"YES");
+
+	for(int i=0;i<2;i++)
+        rectangle(275-i,215-i,303+i,240+i);
+
+	outtextxy(280,220,"NO");
+
+	outtextxy(180,280,"press Y or N to continue . . . .");
+	exit_menu_input();
+
+}
 
 int randomfunc(int count){
 
@@ -937,15 +988,28 @@ void computer_mode_menu()
 
 
     for(int i=0;i<7;i++)
-	rectangle(110-i,120-i,500+i,370+i);
+	rectangle(110-i,90-i,500+i,370+i);
 
 
-    //setcolor(YELLOW);
-	//settextstyle(EUROPEAN_FONT,HORIZ_DIR,4);
-	outtextxy(240,160,"EASY");
-	outtextxy(240,210,"MEDIUM");
-	outtextxy(240,260,"HARD");
-	outtextxy(240,310,"BACK TO MENU");
+	//settextstyle(0,HORIZ_DIR,1);
+	outtextxy(200,120,"1.");
+	outtextxy(240,120,"EASY");
+	line(240, 140, 250, 140);
+
+    outtextxy(200,170,"2.");
+	outtextxy(240,170,"MEDIUM");
+	line(240, 190, 250, 190);
+
+    outtextxy(200,220,"3.");
+	outtextxy(240,220,"HARD");
+	line(240, 240, 250, 240);
+
+	outtextxy(200,270,"4.");
+	outtextxy(240,270,"BACK TO MAIN MENU");
+	line(240, 290, 250, 290);
+
+	outtextxy(160,340,"press  1,2,3  /  H,C,ESC  /  F1,F2,E  to continue . . . .");
+
 
 	computer_mode_menu_input();
 
@@ -979,8 +1043,8 @@ void menuinput(){
 
             else if(ch==ESC)
             {
-
-               exit(1);
+                exit_menu();
+               //exit(1);
 
             }
 
@@ -993,16 +1057,25 @@ void menu()
 {
 
     setcolor(7);
+
     for(int i=0;i<7;i++)
-	rectangle(110-i,120-i,500+i,370+i);
+	rectangle(110-i,90-i,500+i,370+i);
 
 
+	//settextstyle(0,HORIZ_DIR,1);
+	outtextxy(200,140,"1.");
+	outtextxy(240,140,"HUMAN  vs  HUMAN");
+	line(240, 160, 250, 160);
 
-	//settextstyle(EUROPEAN_FONT,HORIZ_DIR,4);
-	outtextxy(180,180,"PRESS   F1 ->   PLAYER  vs  PLAYER");
-	outtextxy(180,240,"PRESS   F2 ->   PlAYER  vs  COMPUTER");
-	//outtextxy(240,300,"UPGRADES");
-	outtextxy(180,300,"PRESS ESC ->   EXIT");
+    outtextxy(200,200,"2.");
+	outtextxy(240,200,"COMPUTER  vs  HUMAN");
+	line(240, 220, 250, 220);
+
+    outtextxy(200,260,"3.");
+	outtextxy(240,260,"EXIT");
+	line(240, 280, 250, 280);
+
+	outtextxy(160,340,"press  1,2,3  /  H,C,ESC  /  F1,F2,E  to continue . . . .");
 
 	menuinput();
 
