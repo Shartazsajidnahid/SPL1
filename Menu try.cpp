@@ -22,6 +22,8 @@ void menu();
 #include<stdio.h>
 #include<iostream>
 #include<stdlib.h>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -529,7 +531,7 @@ void make_move( )
                 }
 
             }
-            else if( ch == 27){
+            else if( ch == ESC){
                 cleardevice();
                 menu();
             }
@@ -577,7 +579,7 @@ void make_move( )
         player = player*(-1);
     }
     else wrong_move = TRUE;
-    //turn_white_plus_into_green();
+    turn_white_plus_into_green();
 
 
 }
@@ -688,32 +690,61 @@ int count_flippable_pieces(int i, int j){
 }
 
 
+int randomfunc(int count){
+
+        int random;
+
+      // initialize random
+        srand ( time(NULL) );
+
+      // generate secret number
+        random = rand() % count  + 1;
+
+     return random;
+
+}
 
 void easy_ai(){
 
-    int min = 10000, row = -1, col = -1, x = 10000;
+    int min = 10000, row = -1, col = -1, x = 10000 , count = 0 ;
 
     for(int i=0;i<8; i++){
+
         for(int j=0;j<8;j++){
+
             if(board[i][j].value==PLAYABLE){
-                cout << " HEY ";
-                x = count_flippable_pieces(i,j);
+                count++;
 
-                cout << "row: " << i << "  column: " << j << " x = " << x << endl;
+            }
+        }
+    }
 
-                if(x<min){
-                    min = x;
+    int random = randomfunc(count);
+    count = 0;
+
+    cout << random << endl;
+
+    for(int i=0;i<8; i++){
+
+        for(int j=0;j<8;j++){
+
+            if(board[i][j].value==PLAYABLE){
+                count++;
+                if(count == random){
                     row = i;
                     col = j;
+                    break;
                 }
             }
         }
     }
+
     cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
 
-    board[row][col].value = player;    capture_pieces( row,  col );
+    board[row][col].value = player;
+    capture_pieces( row,  col );
     player = player*(-1);
-   //turn_white_plus_into_green();
+    turn_white_plus_into_green();
 
 
 }
@@ -753,6 +784,73 @@ void easy_mode(){
     display_winner();
 }
 
+void medium_ai(){
+
+    int max = -1, row = -1, col = -1, x = 10000;
+
+    for(int i=0;i<8; i++){
+        for(int j=0;j<8;j++){
+            if(board[i][j].value==PLAYABLE){
+                cout << " HEY ";
+                x = count_flippable_pieces(i,j);
+
+                cout << "row: " << i << "  column: " << j << " x = " << x << endl;
+
+                if(x>max){
+                    max = x;
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+    }
+    cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
+
+    board[row][col].value = player;    capture_pieces( row,  col );
+    player = player*(-1);
+   //turn_white_plus_into_green();
+
+
+}
+
+void medium_mode(){
+    initial_board();
+
+    while ( !game_ended )
+    {
+        playable_options();
+        if ( !has_valid_move )
+        {
+            if ( skipped_turn )
+            {
+                game_ended = 1;
+                drawboard();
+                continue;
+            }
+            skipped_turn = 1;
+            player=player*-1;
+
+        }
+        else
+        {
+            skipped_turn = 0;
+            drawboard( );
+            if(player==black) make_move();
+            else {
+                Sleep(1000);
+                medium_ai();
+            }
+        }
+
+        cleardevice();
+           // break;
+
+    }
+
+    display_winner();
+
+}
+
 
 void two_player_mode(){
 
@@ -778,7 +876,7 @@ void two_player_mode(){
             drawboard( );
             make_move( );
         }
-
+        //cleardevice();
     }
 
     display_winner( );
@@ -807,14 +905,14 @@ void computer_mode_menu_input(){
             {
                 cleardevice();
 
-                easy_mode();
+                medium_mode();
 
             }
             else if(ch==F3)  // 2 player menu
             {
                 cleardevice();
 
-                computer_mode_menu();
+                //computer_mode_menu();
 
             }
 
@@ -886,13 +984,11 @@ void menuinput(){
 
             }
 
-
-
-
         }
     }
 
 }
+
 void menu()
 {
 
