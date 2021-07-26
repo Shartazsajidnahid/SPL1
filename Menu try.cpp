@@ -1,10 +1,8 @@
 void computer_mode_menu();
 void menu();
 
-#define PAGE_UP     73
-#define HOME        71
-#define END         79
-#define PAGE_DOWN   81
+
+#define ESC         27
 #define UP_ARROW    72
 #define LEFT_ARROW  75
 #define DOWN_ARROW  80
@@ -498,25 +496,25 @@ void make_move( )
 
             ch=getch();
 
-            if(ch==72)                    //move upward
+            if(ch==UP_ARROW)                    //move upward
             {
                 if(y != 75 )
                     y-=50;
             }
-            else if(ch==75)          //move left
+            else if(ch==LEFT_ARROW)          //move left
             {
                 if(x!=75)
                     x-=50;
             }
 
-            else if(ch==77)          //move right
+            else if(ch==RIGHT_ARROW)          //move right
             {
 
                 if(x!=425)
                     x+=50;
             }
 
-            else if(ch==80)          //move downward
+            else if(ch==DOWN_ARROW)          //move downward
             {
                 if(y!=425)
                     y+=50;
@@ -531,9 +529,13 @@ void make_move( )
                 }
 
             }
+            else if( ch == 27){
+                cleardevice();
+                menu();
+            }
             setfillstyle(SOLID_FILL,GREEN);
             floodfill(p,q,WHITE);
-            if((ch==80)|| (ch==77)|| (ch==72)|| (ch==75))
+            if((ch==UP_ARROW)|| (ch==DOWN_ARROW)|| (ch==LEFT_ARROW)|| (ch==RIGHT_ARROW))
             {
                 if(board[n][m].value==black)
                 {
@@ -719,8 +721,6 @@ void easy_ai(){
 void easy_mode(){
     initial_board();
 
-    //initwindow(getmaxwidth(), getmaxheight(), "Full screen window - press a key to close");
-
     while ( !game_ended )
     {
         playable_options();
@@ -754,6 +754,37 @@ void easy_mode(){
 }
 
 
+void two_player_mode(){
+
+    initial_board();
+
+    while ( !game_ended )
+    {
+        playable_options();
+        if ( !has_valid_move )
+        {
+            if ( skipped_turn )
+            {
+                game_ended = 1;
+                drawboard( );
+                continue;
+            }
+            skipped_turn = 1;
+            player=player*-1;
+        }
+        else
+        {
+            skipped_turn = 0;
+            drawboard( );
+            make_move( );
+        }
+
+    }
+
+    display_winner( );
+    menu();
+
+}
 
 void computer_mode_menu_input(){
     char ch;
@@ -767,27 +798,27 @@ void computer_mode_menu_input(){
 
             ch=getch();
 
-            if(ch==59)   // 1 player
+            if(ch==F1)   // 1 player
             {
                 cleardevice();
                 easy_mode();
             }
-            else if(ch==60)  // 2 player menu
+            else if(ch==F2)  // 2 player menu
+            {
+                cleardevice();
+
+                easy_mode();
+
+            }
+            else if(ch==F3)  // 2 player menu
             {
                 cleardevice();
 
                 computer_mode_menu();
 
             }
-            else if(ch==61)  // 2 player menu
-            {
-                cleardevice();
 
-                computer_mode_menu();
-
-            }
-
-            else if(ch==27)
+            else if(ch==ESC)
             {
 
                cleardevice();
@@ -807,16 +838,16 @@ void computer_mode_menu()
 {
 
 
-    for(int i=0;i<10;i++)
-	rectangle(110-i,150-i,580+i,430+i);
+    for(int i=0;i<7;i++)
+	rectangle(110-i,120-i,500+i,370+i);
 
 
-    setcolor(YELLOW);
+    //setcolor(YELLOW);
 	//settextstyle(EUROPEAN_FONT,HORIZ_DIR,4);
-	outtextxy(240,200,"EASY");
-	outtextxy(240,260,"MEDIUM");
-	outtextxy(240,320,"HARD");
-	outtextxy(240,380,"BACK TO MENU");
+	outtextxy(240,160,"EASY");
+	outtextxy(240,210,"MEDIUM");
+	outtextxy(240,260,"HARD");
+	outtextxy(240,310,"BACK TO MENU");
 
 	computer_mode_menu_input();
 
@@ -835,12 +866,12 @@ void menuinput(){
 
             ch=getch();
 
-            if(ch==59)   // 1 player
+            if(ch==F1)   // 2 player
             {
                 cleardevice();
-                easy_mode();
+                two_player_mode();
             }
-            else if(ch==60)  // 2 player menu
+            else if(ch==F2)  // 1 player menu
             {
                 cleardevice();
 
@@ -848,7 +879,7 @@ void menuinput(){
 
             }
 
-            else if(ch==27)
+            else if(ch==ESC)
             {
 
                exit(1);
@@ -865,17 +896,17 @@ void menuinput(){
 void menu()
 {
 
+    setcolor(7);
+    for(int i=0;i<7;i++)
+	rectangle(110-i,120-i,500+i,370+i);
 
-    for(int i=0;i<10;i++)
-	rectangle(110-i,150-i,580+i,430+i);
 
 
-    setcolor(YELLOW);
 	//settextstyle(EUROPEAN_FONT,HORIZ_DIR,4);
-	outtextxy(240,200,"1 PLAYER");
-	outtextxy(240,260,"2 PlAYER");
+	outtextxy(180,180,"PRESS   F1 ->   PLAYER  vs  PLAYER");
+	outtextxy(180,240,"PRESS   F2 ->   PlAYER  vs  COMPUTER");
 	//outtextxy(240,300,"UPGRADES");
-	outtextxy(240,320,"EXIT");
+	outtextxy(180,300,"PRESS ESC ->   EXIT");
 
 	menuinput();
 
