@@ -1,5 +1,6 @@
 void computer_mode_menu();
 void menu();
+void medium_ai();
 
 
 #define ESC         27
@@ -47,6 +48,7 @@ int game_ended = FALSE;
 int skipped_turn = FALSE;
 int wrong_move = FALSE;
 int has_valid_move = FALSE;
+int ai_mode;
 
 
 
@@ -63,6 +65,7 @@ void drawboard()
     top = 50;
     right = 100;
     bottom = 100;
+
     for(int i=0; i<8; i++)              //drawing the empty board 8*8
     {
         left = 50;
@@ -143,20 +146,20 @@ void drawboard()
 
     //more than 1 digit er ta thik kora lagbe
     //showing player turn
-    outtextxy(475, 275, "PLAYER : ");
+    outtextxy(475, 275, "TURN : ");
     if(player==black)
     {
         setcolor(DARKGRAY);
         setfillstyle(SOLID_FILL, BLACK);
-        circle(580, 283 , 17);
-        floodfill(580, 283,DARKGRAY);
+        circle(555, 283 , 17);
+        floodfill(555, 283,DARKGRAY);
     }
     else
     {
         setcolor(DARKGRAY);
         setfillstyle(SOLID_FILL, WHITE);
-        circle(580, 283 , 17);
-        floodfill(580, 283,DARKGRAY);
+        circle(555, 283 , 17);
+        floodfill(555, 283,DARKGRAY);
     }
 
 }
@@ -709,7 +712,6 @@ void exit_menu_input(){
             {
                 cleardevice();
                 menu();
-
             }
 
 
@@ -800,7 +802,8 @@ void easy_ai(){
 
 }
 
-void easy_mode(){
+
+void one_player_mode(){
     initial_board();
 
     while ( !game_ended )
@@ -825,7 +828,11 @@ void easy_mode(){
             if(player==black) make_move();
             else {
                 Sleep(1000);
-                easy_ai();
+                if(ai_mode == 1)
+                    easy_ai();
+                if(ai_mode == 2)
+                    medium_ai();
+
             }
         }
         cleardevice();
@@ -834,6 +841,7 @@ void easy_mode(){
     }
     display_winner();
 }
+
 
 void medium_ai(){
 
@@ -861,44 +869,6 @@ void medium_ai(){
     player = player*(-1);
    //turn_white_plus_into_green();
 
-
-}
-
-void medium_mode(){
-    initial_board();
-
-    while ( !game_ended )
-    {
-        playable_options();
-        if ( !has_valid_move )
-        {
-            if ( skipped_turn )
-            {
-                game_ended = 1;
-                drawboard();
-                continue;
-            }
-            skipped_turn = 1;
-            player=player*-1;
-
-        }
-        else
-        {
-            skipped_turn = 0;
-            drawboard( );
-            if(player==black) make_move();
-            else {
-                Sleep(1000);
-                medium_ai();
-            }
-        }
-
-        cleardevice();
-           // break;
-
-    }
-
-    display_winner();
 
 }
 
@@ -935,6 +905,7 @@ void two_player_mode(){
 
 }
 
+
 void computer_mode_menu_input(){
     char ch;
 
@@ -950,19 +921,21 @@ void computer_mode_menu_input(){
             if(ch==F1)   // 1 player
             {
                 cleardevice();
-                easy_mode();
+                ai_mode = 1;
+                one_player_mode();
             }
             else if(ch==F2)  // 2 player menu
             {
                 cleardevice();
-
-                medium_mode();
+                ai_mode = 2;
+                one_player_mode();
 
             }
             else if(ch==F3)  // 2 player menu
             {
                 cleardevice();
-
+                ai_mode = 3;
+                one_player_mode();
                 //computer_mode_menu();
 
             }
@@ -975,13 +948,11 @@ void computer_mode_menu_input(){
 
             }
 
-
-
-
         }
     }
 
 }
+
 
 void computer_mode_menu()
 {
@@ -1015,6 +986,7 @@ void computer_mode_menu()
 
 
 }
+
 
 void menuinput(){
     char ch;
@@ -1052,6 +1024,7 @@ void menuinput(){
     }
 
 }
+
 
 void menu()
 {
