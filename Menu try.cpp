@@ -1,3 +1,4 @@
+
 #include<graphics.h>
 #include<stdio.h>
 #include<iostream>
@@ -25,11 +26,7 @@ using namespace std;
 #define F3          61
 #define F4          62
 #define F5          63
-#define F6          64
-#define F7          65
-#define F8          66
-#define F9          67
-#define F10         68
+
 
 
 void computer_mode_menu();
@@ -541,7 +538,7 @@ void make_move( )
                 if(y!=425)
                     y+=50;
             }
-            else if(ch=='f' || ch == 'F')
+            else if(ch=='f' || ch == 'F' || ch == '\r')
             {
 
                 cout << endl << " p = " << p << " q =" << q << " m =" << m << " n =" << n << endl;
@@ -1145,7 +1142,6 @@ void menu()
 
 int main()
 {
-    cout << hard_initial_value[5][6];
     int d,m;
 
     d=DETECT;
