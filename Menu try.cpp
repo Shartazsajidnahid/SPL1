@@ -1,6 +1,8 @@
 void computer_mode_menu();
 void menu();
 void medium_ai();
+void exit_menu(int x);
+void two_player_mode(int initial_or_fromexitmenu);
 
 
 #define ESC         27
@@ -48,7 +50,7 @@ int game_ended = FALSE;
 int skipped_turn = FALSE;
 int wrong_move = FALSE;
 int has_valid_move = FALSE;
-int ai_mode;
+int ai_mode = 0;
 
 
 
@@ -536,7 +538,7 @@ void make_move( )
             }
             else if( ch == ESC){
                 cleardevice();
-                menu();
+                exit_menu(ai_mode);
             }
             setfillstyle(SOLID_FILL,GREEN);
             floodfill(p,q,WHITE);
@@ -692,7 +694,7 @@ int count_flippable_pieces(int i, int j){
     return total_flippable_piece;
 }
 
-void exit_menu_input(){
+void exit_menu_input(int menu_or_game){
     char ch;
 
     while(1)
@@ -706,12 +708,25 @@ void exit_menu_input(){
 
             if(ch=='y' || ch == 'Y')
             {
-                exit(1);
+
+                cleardevice();
+                if(menu_or_game == -1)
+                    exit(1);
+                else if(menu_or_game == 0){
+                    menu();
+                }
+
             }
             else if(ch=='n' || ch == 'N')  // 1 player menu
             {
                 cleardevice();
-                menu();
+                if(menu_or_game==-1)
+                    menu();
+                else if(menu_or_game==0){
+                    drawboard();
+                    make_move();
+                    two_player_mode(1);
+                }
             }
 
 
@@ -719,7 +734,9 @@ void exit_menu_input(){
         }
     }
 }
-void exit_menu(){
+
+
+void exit_menu(int x){
     cleardevice();
 
     setcolor(LIGHTGRAY);
@@ -739,9 +756,10 @@ void exit_menu(){
 	outtextxy(280,220,"NO");
 
 	outtextxy(180,280,"press Y or N to continue . . . .");
-	exit_menu_input();
+	exit_menu_input(x);
 
 }
+
 
 int randomfunc(int count){
 
@@ -756,6 +774,7 @@ int randomfunc(int count){
      return random;
 
 }
+
 
 void easy_ai(){
 
@@ -873,9 +892,10 @@ void medium_ai(){
 }
 
 
-void two_player_mode(){
+void two_player_mode(int initial_or_fromexitmenu){
 
-    initial_board();
+
+    if(!initial_or_fromexitmenu)initial_board();
 
     while ( !game_ended )
     {
@@ -1003,7 +1023,7 @@ void menuinput(){
             if(ch==F1)   // 2 player
             {
                 cleardevice();
-                two_player_mode();
+                two_player_mode(0);
             }
             else if(ch==F2)  // 1 player menu
             {
@@ -1015,7 +1035,7 @@ void menuinput(){
 
             else if(ch==ESC)
             {
-                exit_menu();
+                exit_menu(-1);
                //exit(1);
 
             }
@@ -1028,6 +1048,8 @@ void menuinput(){
 
 void menu()
 {
+
+    ai_mode = 0;
 
     setcolor(7);
 
