@@ -36,6 +36,7 @@ void computer_mode_menu();
 void menu();
 void easy_ai();
 void medium_ai();
+void hard_ai();
 void exit_menu(int x);
 void two_player_mode(int initial_or_fromexitmenu);
 void one_player_mode(int initial_or_fromexitmenu);
@@ -616,7 +617,10 @@ void display_winner()
         printf( "Draw game.\n" );
 }
 
-
+int hard_max_point(int i, int j){
+    int count =   hard_initial_value[i][j];
+    return count;
+}
 
 int count_flippable_pieces(int i, int j){
     int opposing_player = player*(-1);
@@ -755,6 +759,8 @@ void one_player_mode(int initial_or_fromexitmenu){
                     easy_ai();
                 if(ai_mode == 2)
                     medium_ai();
+                if( ai_mode == 3)
+                    hard_ai();
 
             }
         }
@@ -874,7 +880,34 @@ void medium_ai(){
 
 }
 
+void hard_ai(){
 
+    int max = -10000, row = -1, col = -1, x ;
+
+    for(int i=0;i<8; i++){
+        for(int j=0;j<8;j++){
+            if(board[i][j].value==PLAYABLE){
+                cout << " HEY ";
+                x = hard_max_point(i,j);
+
+                cout << "row: " << i << "  column: " << j << " x = " << x << endl;
+
+                if(x>max){
+                    max = x;
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+    }
+    cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
+
+    board[row][col].value = player;    capture_pieces( row,  col );
+    player = player*(-1);
+   //turn_white_plus_into_green();
+
+
+}
 
 void exit_menu_input(int menu_or_game){
     char ch;
@@ -1112,7 +1145,7 @@ void menu()
 
 int main()
 {
-
+    cout << hard_initial_value[5][6];
     int d,m;
 
     d=DETECT;
