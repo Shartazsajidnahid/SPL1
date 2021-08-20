@@ -139,6 +139,7 @@ void drawboard()
         }
     }
 
+    setcolor(WHITE);
     //showing scores
     outtextxy(475, 175, "WHITE: ");
     outtextxy(475, 200, "BLACK: ");
