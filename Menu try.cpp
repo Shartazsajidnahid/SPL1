@@ -1,11 +1,19 @@
-void computer_mode_menu();
-void menu();
-void easy_ai();
-void medium_ai();
-void exit_menu(int x);
-void two_player_mode(int initial_or_fromexitmenu);
-void one_player_mode(int initial_or_fromexitmenu);
+#include<graphics.h>
+#include<stdio.h>
+#include<iostream>
+#include<stdlib.h>
+#include <cstdlib>
+#include <ctime>
 
+using namespace std;
+
+
+#define black 1
+#define white (-1)
+#define PLAYABLE 2
+#define EMPTY 0
+#define TRUE 1
+#define FALSE 0
 
 #define ESC         27
 #define UP_ARROW    72
@@ -23,21 +31,24 @@ void one_player_mode(int initial_or_fromexitmenu);
 #define F9          67
 #define F10         68
 
-#include<graphics.h>
-#include<stdio.h>
-#include<iostream>
-#include<stdlib.h>
-#include <cstdlib>
-#include <ctime>
 
-using namespace std;
+void computer_mode_menu();
+void menu();
+void easy_ai();
+void medium_ai();
+void exit_menu(int x);
+void two_player_mode(int initial_or_fromexitmenu);
+void one_player_mode(int initial_or_fromexitmenu);
 
-#define black 1
-#define white (-1)
-#define PLAYABLE 2
-#define EMPTY 0
-#define TRUE 1
-#define FALSE 0
+int hard_initial_value[8][8] = {{99, -8, 8, 6, 6, 8, -8, 99},
+                                {-8, -24, -4, -3, -3, -4, -24, -8},
+                                {8, -4, 7, 4, 4, 7, -4, 8},
+                                {6, -3, 4, 0, 0, 4, -3, 6},
+                                {6, -3, 4, 0, 0, 4, -3, 6},
+                                {8, -4, 7, 4, 4, 7, -4, 8},
+                                {-8, -24, -4, -3, -3, -4, -24, -8},
+                                {99, -8, 8, 6, 6, 8, -8, 99}};
+
 
 struct Board
 {
@@ -989,8 +1000,9 @@ void computer_mode_menu_input(){
 void computer_mode_menu()
 {
 
+
     setfillstyle(SOLID_FILL,RED); //coloring outside the Board
-    rectangle(50,50,100,50);
+
     floodfill(25,75,WHITE);
 
     for(int i=0;i<7;i++)
@@ -1066,7 +1078,7 @@ void menu()
 
     ai_mode = 0;
     setfillstyle(SOLID_FILL,RED); //coloring outside the Board
-    rectangle(50,50,100,50);
+
     floodfill(25,75,WHITE);
 
 
