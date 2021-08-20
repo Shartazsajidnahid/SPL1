@@ -3,6 +3,7 @@ void menu();
 void medium_ai();
 void exit_menu(int x);
 void two_player_mode(int initial_or_fromexitmenu);
+void one_player_mode(int initial_or_fromexitmenu);
 
 
 #define ESC         27
@@ -712,7 +713,7 @@ void exit_menu_input(int menu_or_game){
                 cleardevice();
                 if(menu_or_game == -1)
                     exit(1);
-                else if(menu_or_game == 0){
+                else{
                     menu();
                 }
 
@@ -727,9 +728,13 @@ void exit_menu_input(int menu_or_game){
                     make_move();
                     two_player_mode(1);
                 }
+                else if(menu_or_game>0){
+                    drawboard();
+                    make_move();
+                    one_player_mode(1);
+                }
+
             }
-
-
 
         }
     }
@@ -822,8 +827,9 @@ void easy_ai(){
 }
 
 
-void one_player_mode(){
-    initial_board();
+void one_player_mode(int initial_or_fromexitmenu){
+    if(!initial_or_fromexitmenu)initial_board();
+
 
     while ( !game_ended )
     {
@@ -942,20 +948,20 @@ void computer_mode_menu_input(){
             {
                 cleardevice();
                 ai_mode = 1;
-                one_player_mode();
+                one_player_mode(0);
             }
             else if(ch==F2)  // 2 player menu
             {
                 cleardevice();
                 ai_mode = 2;
-                one_player_mode();
+                one_player_mode(0);
 
             }
             else if(ch==F3)  // 2 player menu
             {
                 cleardevice();
                 ai_mode = 3;
-                one_player_mode();
+                one_player_mode(0);
                 //computer_mode_menu();
 
             }
