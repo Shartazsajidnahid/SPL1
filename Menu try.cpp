@@ -62,6 +62,7 @@ int skipped_turn = FALSE;
 int wrong_move = FALSE;
 int has_valid_move = FALSE;
 int ai_mode = 0;
+int mobility_playable=0;
 
 
 
@@ -329,6 +330,7 @@ void playable_options()
             {
                 board[i][j].value = PLAYABLE;
                 has_valid_move = TRUE;
+                mobility_playable++;
             }
         }
     }
@@ -614,9 +616,40 @@ void display_winner()
         printf( "Draw game.\n" );
 }
 
-int hard_max_point(int i, int j){
+int hard_board_val(int i, int j){
     int count =   hard_initial_value[i][j];
     return count;
+}
+
+int hard_mobility(int i, int j){
+    mobility_playable = 0;
+    int dummy_board[8][8];
+
+    for ( int i=0; i<8; ++i )
+    {
+        for ( int j=0; j<8; ++j )
+        {
+             dummy_board[i][j] = board[i][j].value;
+
+        }
+    }
+
+    board[i][j].value = player;
+    capture_pieces( i,  j );
+    player = player*(-1);
+    playable_options();
+    player = player*(-1);
+
+    for ( int i=0; i<8; ++i )
+    {
+        for ( int j=0; j<8; ++j )
+        {
+             board[i][j].value = dummy_board[i][j];
+        }
+    }
+    return mobility_playable;
+
+
 }
 
 int count_flippable_pieces(int i, int j){
@@ -725,7 +758,6 @@ int randomfunc(int count){
 }
 
 
-
 void one_player_mode(int initial_or_fromexitmenu){
     if(!initial_or_fromexitmenu)initial_board();
 
@@ -751,7 +783,7 @@ void one_player_mode(int initial_or_fromexitmenu){
             drawboard( );
             if(player==black) make_move();
             else {
-                Sleep(1000);
+                Sleep(2000);
                 if(ai_mode == 1)
                     easy_ai();
                 if(ai_mode == 2)
@@ -883,9 +915,12 @@ void hard_ai(){
 
     for(int i=0;i<8; i++){
         for(int j=0;j<8;j++){
+            x = 0;
             if(board[i][j].value==PLAYABLE){
                 cout << " HEY ";
-                x = hard_max_point(i,j);
+                x += hard_board_val(i,j);
+
+                cout << "Mobility = " <<hard_mobility(i,j) << endl;
 
                 cout << "row: " << i << "  column: " << j << " x = " << x << endl;
 
@@ -976,7 +1011,6 @@ void exit_menu(int x){
 	exit_menu_input(x);
 
 }
-
 
 
 void computer_mode_menu_input(){
