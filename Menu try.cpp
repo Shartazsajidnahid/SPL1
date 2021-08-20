@@ -1,5 +1,6 @@
 void computer_mode_menu();
 void menu();
+void easy_ai();
 void medium_ai();
 void exit_menu(int x);
 void two_player_mode(int initial_or_fromexitmenu);
@@ -592,7 +593,7 @@ void make_move( )
 
 
 
-void display_winner( )
+void display_winner()
 {
     printf( "Final score:\n%s: %d %s: %d\n", "white", white_score, "black", black_score );
     if ( white_score > black_score )
@@ -695,76 +696,6 @@ int count_flippable_pieces(int i, int j){
     return total_flippable_piece;
 }
 
-void exit_menu_input(int menu_or_game){
-    char ch;
-
-    while(1)
-    {
-
-
-        if(kbhit())                                            //check if a key is pressed
-        {
-
-            ch=getch();
-
-            if(ch=='y' || ch == 'Y')
-            {
-
-                cleardevice();
-                if(menu_or_game == -1)
-                    exit(1);
-                else{
-                    menu();
-                }
-
-            }
-            else if(ch=='n' || ch == 'N')  // 1 player menu
-            {
-                cleardevice();
-                if(menu_or_game==-1)
-                    menu();
-                else if(menu_or_game==0){
-                    drawboard();
-                    make_move();
-                    two_player_mode(1);
-                }
-                else if(menu_or_game>0){
-                    drawboard();
-                    make_move();
-                    one_player_mode(1);
-                }
-
-            }
-
-        }
-    }
-}
-
-
-void exit_menu(int x){
-    cleardevice();
-
-    setcolor(LIGHTGRAY);
-    for(int i=0;i<7;i++)
-	rectangle(110-i,120-i,450+i,350+i);
-
-    outtextxy(180,180,"DO  YOU  WANT  TO  QUIT  ?");
-
-    for(int i=0;i<2;i++)
-        rectangle(215-i,215-i,253+i,240+i);
-
-	outtextxy(220,220,"YES");
-
-	for(int i=0;i<2;i++)
-        rectangle(275-i,215-i,303+i,240+i);
-
-	outtextxy(280,220,"NO");
-
-	outtextxy(180,280,"press Y or N to continue . . . .");
-	exit_menu_input(x);
-
-}
-
 
 int randomfunc(int count){
 
@@ -777,6 +708,81 @@ int randomfunc(int count){
         random = rand() % count  + 1;
 
      return random;
+
+}
+
+
+
+void one_player_mode(int initial_or_fromexitmenu){
+    if(!initial_or_fromexitmenu)initial_board();
+
+
+    while ( !game_ended )
+    {
+        playable_options();
+        if ( !has_valid_move )
+        {
+            if ( skipped_turn )
+            {
+                game_ended = 1;
+                drawboard();
+                continue;
+            }
+            skipped_turn = 1;
+            player=player*-1;
+
+        }
+        else
+        {
+            skipped_turn = 0;
+            drawboard( );
+            if(player==black) make_move();
+            else {
+                Sleep(1000);
+                if(ai_mode == 1)
+                    easy_ai();
+                if(ai_mode == 2)
+                    medium_ai();
+
+            }
+        }
+        cleardevice();
+           // break;
+
+    }
+    display_winner();
+}
+
+void two_player_mode(int initial_or_fromexitmenu){
+
+
+    if(!initial_or_fromexitmenu)initial_board();
+
+    while ( !game_ended )
+    {
+        playable_options();
+        if ( !has_valid_move )
+        {
+            if ( skipped_turn )
+            {
+                game_ended = 1;
+                drawboard( );
+                continue;
+            }
+            skipped_turn = 1;
+            player=player*-1;
+        }
+        else
+        {
+            skipped_turn = 0;
+            drawboard( );
+            make_move( );
+        }
+        //cleardevice();
+    }
+
+    display_winner( );
+    menu();
 
 }
 
@@ -827,47 +833,6 @@ void easy_ai(){
 }
 
 
-void one_player_mode(int initial_or_fromexitmenu){
-    if(!initial_or_fromexitmenu)initial_board();
-
-
-    while ( !game_ended )
-    {
-        playable_options();
-        if ( !has_valid_move )
-        {
-            if ( skipped_turn )
-            {
-                game_ended = 1;
-                drawboard();
-                continue;
-            }
-            skipped_turn = 1;
-            player=player*-1;
-
-        }
-        else
-        {
-            skipped_turn = 0;
-            drawboard( );
-            if(player==black) make_move();
-            else {
-                Sleep(1000);
-                if(ai_mode == 1)
-                    easy_ai();
-                if(ai_mode == 2)
-                    medium_ai();
-
-            }
-        }
-        cleardevice();
-           // break;
-
-    }
-    display_winner();
-}
-
-
 void medium_ai(){
 
     int max = -1, row = -1, col = -1, x = 10000;
@@ -898,38 +863,78 @@ void medium_ai(){
 }
 
 
-void two_player_mode(int initial_or_fromexitmenu){
 
+void exit_menu_input(int menu_or_game){
+    char ch;
 
-    if(!initial_or_fromexitmenu)initial_board();
-
-    while ( !game_ended )
+    while(1)
     {
-        playable_options();
-        if ( !has_valid_move )
-        {
-            if ( skipped_turn )
-            {
-                game_ended = 1;
-                drawboard( );
-                continue;
-            }
-            skipped_turn = 1;
-            player=player*-1;
-        }
-        else
-        {
-            skipped_turn = 0;
-            drawboard( );
-            make_move( );
-        }
-        //cleardevice();
-    }
 
-    display_winner( );
-    menu();
+
+        if(kbhit())                                            //check if a key is pressed
+        {
+
+            ch=getch();
+
+            if(ch=='y' || ch == 'Y')
+            {
+
+                cleardevice();
+                if(menu_or_game == -1)
+                    exit(1);
+                else{
+                    menu();
+                }
+
+            }
+            else if(ch=='n' || ch == 'N')  // 1 player menu
+            {
+                cleardevice();
+                if(menu_or_game==-1)
+                    menu();
+                else if(menu_or_game==0){
+                    drawboard();
+                    make_move();
+                    two_player_mode(1);
+                }
+                else if(menu_or_game>0){
+                    drawboard();
+                    make_move();
+                    one_player_mode(1);
+                }
+
+            }
+
+        }
+    }
+}
+
+
+void exit_menu(int x){
+    cleardevice();
+
+    setcolor(WHITE);
+
+    for(int i=0;i<7;i++)
+	rectangle(110-i,120-i,450+i,350+i);
+
+    outtextxy(180,180,"DO  YOU  WANT  TO  QUIT  ?");
+
+    for(int i=0;i<2;i++)
+        rectangle(215-i,215-i,253+i,240+i);
+
+	outtextxy(220,220,"YES");
+
+	for(int i=0;i<2;i++)
+        rectangle(275-i,215-i,303+i,240+i);
+
+	outtextxy(280,220,"NO");
+
+	outtextxy(180,280,"press Y or N to continue . . . .");
+	exit_menu_input(x);
 
 }
+
 
 
 void computer_mode_menu_input(){
@@ -983,6 +988,9 @@ void computer_mode_menu_input(){
 void computer_mode_menu()
 {
 
+    setfillstyle(SOLID_FILL,RED); //coloring outside the Board
+    rectangle(50,50,100,50);
+    floodfill(25,75,WHITE);
 
     for(int i=0;i<7;i++)
 	rectangle(110-i,90-i,500+i,370+i);
@@ -1056,8 +1064,13 @@ void menu()
 {
 
     ai_mode = 0;
+    setfillstyle(SOLID_FILL,RED); //coloring outside the Board
+    rectangle(50,50,100,50);
+    floodfill(25,75,WHITE);
 
-    setcolor(7);
+
+
+    setbkcolor(RED);
 
     for(int i=0;i<7;i++)
 	rectangle(110-i,90-i,500+i,370+i);
