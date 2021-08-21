@@ -54,6 +54,8 @@ struct Board
 };
 
 struct Board board[8][8];
+struct Board dummy_board[8][8];
+
 
 int  player;
 int white_score =2, black_score = 2;
@@ -621,36 +623,66 @@ int hard_board_val(int i, int j){
     return count;
 }
 
+
 int hard_mobility(int i, int j){
     mobility_playable = 0;
-    int dummy_board[8][8];
+
 
     for ( int i=0; i<8; ++i )
     {
         for ( int j=0; j<8; ++j )
         {
-             dummy_board[i][j] = board[i][j].value;
-
+             dummy_board[i][j].value = board[i][j].value;
+             dummy_board[i][j].up = board[i][j].up;
+             dummy_board[i][j].down = board[i][j].down;
+             dummy_board[i][j].left = board[i][j].left;
+             dummy_board[i][j].right = board[i][j].right;
+             dummy_board[i][j].ul = board[i][j].ul;
+             dummy_board[i][j].ur = board[i][j].ur;
+             dummy_board[i][j].dr = board[i][j].dr;
+             dummy_board[i][j].dl = board[i][j].dl;
         }
     }
+
 
     board[i][j].value = player;
+
     capture_pieces( i,  j );
+    cout << "EY " <<  player << endl;
     player = player*(-1);
     playable_options();
-    player = player*(-1);
 
     for ( int i=0; i<8; ++i )
     {
         for ( int j=0; j<8; ++j )
         {
-             board[i][j].value = dummy_board[i][j];
+             cout << board[i][j].value << " ";
+
+        }cout << endl;
+    }
+
+
+    for ( int i=0; i<8; ++i )
+    {
+        for ( int j=0; j<8; ++j )
+        {
+             board[i][j].value = dummy_board[i][j].value ;
+             board[i][j].up= dummy_board[i][j].up ;
+             board[i][j].down=dummy_board[i][j].down  ;
+             board[i][j].left= dummy_board[i][j].left ;
+             board[i][j].right=dummy_board[i][j].right  ;
+             board[i][j].ul=dummy_board[i][j].ul  ;
+             board[i][j].ur=dummy_board[i][j].ur  ;
+             board[i][j].dr=dummy_board[i][j].dr  ;
+             board[i][j].dl = dummy_board[i][j].dl ;
         }
     }
+
     return mobility_playable;
 
 
 }
+
 
 int count_flippable_pieces(int i, int j){
     int opposing_player = player*(-1);
@@ -911,16 +943,18 @@ void medium_ai(){
 
 void hard_ai(){
 
-    int max = -10000, row = -1, col = -1, x ;
+    int max = -10000, row = -1, col = -1, x , dummy_player = player;
 
     for(int i=0;i<8; i++){
         for(int j=0;j<8;j++){
+            player = dummy_player;
             x = 0;
             if(board[i][j].value==PLAYABLE){
-                cout << " HEY ";
+
                 x += hard_board_val(i,j);
 
                 cout << "Mobility = " <<hard_mobility(i,j) << endl;
+
 
                 cout << "row: " << i << "  column: " << j << " x = " << x << endl;
 
@@ -936,7 +970,7 @@ void hard_ai(){
 
     board[row][col].value = player;    capture_pieces( row,  col );
     player = player*(-1);
-   //turn_white_plus_into_green();
+
 
 
 }
