@@ -185,6 +185,14 @@ void drawboard()
 
 void initial_board()
 {
+    white_score =2;
+    black_score = 2;
+    game_ended = FALSE;
+    skipped_turn = FALSE;
+    wrong_move = FALSE;
+    has_valid_move = FALSE;
+
+
     for(int i=0; i<8; i++)
     {
         for(int j=0; j<8; j++)
@@ -1107,8 +1115,8 @@ void two_player_mode(int initial_or_fromexitmenu){
         cleardevice();
     }
 
-    display_winner( );
-    menu();
+     cleardevice();
+    display_winner();
 
 }
 
