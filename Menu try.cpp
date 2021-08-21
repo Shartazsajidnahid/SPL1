@@ -37,6 +37,7 @@ void hard_ai();
 void exit_menu(int x);
 void two_player_mode(int initial_or_fromexitmenu);
 void one_player_mode(int initial_or_fromexitmenu);
+void display_winner();
 
 int hard_initial_value[8][8] = {{99, -8, 8, 6, 6, 8, -8, 99},
                                 {-8, -24, -4, -3, -3, -4, -24, -8},
@@ -71,7 +72,7 @@ int mobility_playable=0;
 void drawboard()
 {
     int left, top, right, bottom, x, y;
-    char str[1];
+    char str[2];
 
     setfillstyle(SOLID_FILL,RED); //coloring outside the Board
     rectangle(50,50,100,50);
@@ -606,18 +607,6 @@ void make_move( )
 }
 
 
-
-void display_winner()
-{
-    printf( "Final score:\n%s: %d %s: %d\n", "white", white_score, "black", black_score );
-    if ( white_score > black_score )
-        printf( "%s wins.\n", "white" );
-    else if ( white_score < black_score )
-        printf( "%s wins.\n",  "black" );
-    else
-        printf( "Draw game.\n" );
-}
-
 int hard_board_val(int i, int j){
     int count =   hard_initial_value[i][j];
     return count;
@@ -1073,7 +1062,7 @@ void one_player_mode(int initial_or_fromexitmenu){
             drawboard( );
             if(player==black) make_move();
             else {
-                Sleep(1000);
+                //Sleep(1000);
                 if(ai_mode == 1)
                     easy_ai();
                 if(ai_mode == 2)
@@ -1084,9 +1073,9 @@ void one_player_mode(int initial_or_fromexitmenu){
             }
         }
         cleardevice();
-           // break;
 
     }
+    cleardevice();
     display_winner();
 }
 
@@ -1115,7 +1104,7 @@ void two_player_mode(int initial_or_fromexitmenu){
             drawboard( );
             make_move( );
         }
-        //cleardevice();
+        cleardevice();
     }
 
     display_winner( );
@@ -1434,6 +1423,77 @@ void menuinput(){
 }
 
 
+void display_winner()
+{
+    char str[2];
+
+
+
+    setfillstyle(SOLID_FILL,RED); //coloring outside the Board
+    floodfill(25,75,WHITE);
+    setcolor(WHITE);
+    setbkcolor(RED);
+    for(int i=0;i<7;i++)
+	rectangle(110-i,90-i,500+i,370+i);
+
+
+
+    if ( white_score > black_score )
+        {
+            outtextxy(260, 135, "WHITE WINS !");
+            line(260, 157, 350, 157);
+            line(260, 160, 350, 160);
+            outtextxy(200, 185 , "score ->" );
+            sprintf(str, "%d" , white_score);
+            outtextxy(270, 185 , str );
+            outtextxy(300, 185 , "vs" );
+            sprintf(str, "%d" , black_score);
+            outtextxy(340, 185 , str );
+        }
+    else if ( white_score < black_score )
+        {
+
+            outtextxy(260, 135, "BLACK WINS !");
+            line(260, 157, 350, 157);
+            line(260, 160, 350, 160);
+            outtextxy(200, 185 , "score ->" );
+            sprintf(str, "%d" , black_score);
+            outtextxy(270, 185 , str );
+            outtextxy(300, 185 , "vs" );
+            sprintf(str, "%d" , white_score);
+            outtextxy(340, 185 , str );
+        }
+    else
+        {
+            //settextstyle(1,0,15);
+            outtextxy(280, 135, "DRAW");
+            line(280, 157, 320, 157);
+            line(280, 160, 320, 160);
+            outtextxy(200, 185 , "score ->" );
+            sprintf(str, "%d" , white_score);
+            outtextxy(270, 185 , str );
+            outtextxy(300, 185 , "vs" );
+            sprintf(str, "%d" , black_score);
+            outtextxy(340, 185 , str );
+        }
+
+    //showing scores
+
+        outtextxy(160,340,"         press  any key  to continue . . . .");
+
+        while(1)
+    {
+
+
+        if(kbhit())                                            //check if a key is pressed
+        {
+            cleardevice();
+            menu();
+        }
+    }
+
+}
+
 void menu()
 {
 
@@ -1442,7 +1502,7 @@ void menu()
 
     floodfill(25,75,WHITE);
 
-
+    setcolor(WHITE);
 
     setbkcolor(RED);
 
@@ -1478,6 +1538,8 @@ int main()
     d=DETECT;
 
     initgraph(&d,&m,"Reversi");
+
+
     menu();
 
     getch();
