@@ -648,18 +648,8 @@ int hard_mobility(int i, int j){
     board[i][j].value = player;
 
     capture_pieces( i,  j );
-    cout << "EY " <<  player << endl;
     player = player*(-1);
     playable_options();
-
-    for ( int i=0; i<8; ++i )
-    {
-        for ( int j=0; j<8; ++j )
-        {
-             cout << board[i][j].value << " ";
-
-        }cout << endl;
-    }
 
 
     for ( int i=0; i<8; ++i )
@@ -683,6 +673,274 @@ int hard_mobility(int i, int j){
 
 }
 
+void hard_c_square_value_update(){
+
+    if(board[0][0].value!=0){
+
+        if(board[0][0].value==white){
+            cout << "yes 1 ";
+            if(hard_initial_value[0][1]==-8){
+                hard_initial_value[0][1]+=18;
+            }
+            if(hard_initial_value[1][0]==-8){
+                hard_initial_value[1][0]+=18;
+            }
+        }
+
+        else{
+            //check down
+            int col = 0;
+            int row = 2;
+            int white_count = 0;
+
+            for(;row<8;row++){
+                if(board[row][col].value==black){
+                    if(hard_initial_value[1][0]==-8) hard_initial_value[1][0]+=18;
+                    break;
+                }
+                else if(board[row][col].value==white){
+                    white_count++;
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            if(white_count==6){
+                if(hard_initial_value[1][0]==-8){
+                hard_initial_value[1][0]+=18;
+            }
+            }
+            //check right
+            col = 2;
+            row = 0;
+            white_count=0;
+
+            for(;col<8;col++){
+                if(board[row][col].value==black){
+                    if(hard_initial_value[0][1]==-8) hard_initial_value[0][1]+=18;
+                    break;
+                }
+                else if(board[row][col].value==white){
+                        white_count++;
+
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            if(white_count==6){
+                if(hard_initial_value[0][1]==-8){
+                hard_initial_value[0][1]+=18;
+            }
+            }
+
+        }
+    }
+
+    if(board[7][0].value!=0){
+        cout << "YA 2" << endl;
+        if(board[7][0].value==white){
+            cout << "yes 1 ";
+            if(hard_initial_value[7][1]==-8){
+                hard_initial_value[7][1]+=18;
+            }
+            if(hard_initial_value[6][0]==-8){
+                hard_initial_value[6][0]+=18;
+            }
+        }
+
+        else{
+            //check up
+            int col = 0;
+            int row = 5;
+            int white_count = 0;
+
+            for(;row<8;row--){
+                if(board[row][col].value==black){
+                    if(hard_initial_value[6][0]==-8) hard_initial_value[6][0]+=18;
+                    break;
+                }
+                else if(board[row][col].value==white){
+                    white_count++;
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            if(white_count==6){
+                if(hard_initial_value[6][0]==-8){
+                hard_initial_value[6][0]+=18;
+            }
+            }
+            //check right
+            col = 2;
+            row = 0;
+            white_count=0;
+
+            for(;col<8;col++){
+                if(board[row][col].value==black){
+                    if(hard_initial_value[7][1]==-8) hard_initial_value[7][1]+=18;
+                    break;
+                }
+                else if(board[row][col].value==white){
+                                        white_count++;
+
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            if(white_count==6){
+                if(hard_initial_value[7][1]==-8){
+                hard_initial_value[7][1]+=18;
+            }
+            }
+
+        }
+    }
+
+    if(board[0][7].value!=0){
+        cout << "YA 3" << endl;
+        if(board[0][7].value==white){
+            cout << "yes 1 ";
+            if(hard_initial_value[0][6]==-8){
+                hard_initial_value[0][6]+=18;
+            }
+            if(hard_initial_value[1][7]==-8){
+                hard_initial_value[1][7]+=18;
+            }
+        }
+
+        else{
+            //check down
+            int col = 7;
+            int row = 2;
+            int white_count = 0;
+
+            for(;row<8;row++){
+                if(board[row][col].value==black){
+                    if(hard_initial_value[1][7]==-8) hard_initial_value[1][7]+=18;
+                    break;
+                }
+                else if(board[row][col].value==white){
+                    white_count++;
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            if(white_count==6){
+                if(hard_initial_value[1][7]==-8){
+                hard_initial_value[1][7]+=18;
+            }
+            }
+            //check left
+            col = 5;
+            row = 0;
+            white_count=0;
+
+            for(;col>=0;col--){
+                if(board[row][col].value==black){
+                    if(hard_initial_value[0][6]==-8) hard_initial_value[0][6]+=18;
+                    break;
+                }
+                else if(board[row][col].value==white){
+                        white_count++;
+
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            if(white_count==6){
+                if(hard_initial_value[0][6]==-8){
+                hard_initial_value[0][6]+=18;
+            }
+            }
+
+        }
+    }
+
+    if(board[7][7].value!=0){
+        cout << "YA 4" << endl;
+        if(board[7][7].value==white){
+            cout << "yes 1 ";
+            if(hard_initial_value[6][7]==-8){
+                hard_initial_value[6][7]+=18;
+            }
+            if(hard_initial_value[7][6]==-8){
+                hard_initial_value[7][6]+=18;
+            }
+        }
+
+        else{
+            //check up
+            int col = 7;
+            int row = 5;
+            int white_count = 0;
+
+            for(;row>=0;row--){
+                if(board[row][col].value==black){
+                    if(hard_initial_value[6][7]==-8) hard_initial_value[6][7]+=18;
+                    break;
+                }
+                else if(board[row][col].value==white){
+                    white_count++;
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            if(white_count==6){
+                if(hard_initial_value[6][7]==-8){
+                hard_initial_value[6][7]+=18;
+            }
+            }
+            //check left
+            col = 5;
+            row = 7;
+            white_count=0;
+
+            for(;col>=0;col--){
+                if(board[row][col].value==black){
+                    if(hard_initial_value[7][6]==-8) hard_initial_value[7][6]+=18;
+                    break;
+                }
+                else if(board[row][col].value==white){
+                        white_count++;
+
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            if(white_count==6){
+                if(hard_initial_value[7][6]==-8){
+                hard_initial_value[7][6]+=18;
+            }
+            }
+
+        }
+    }
+
+    for ( int i=0; i<8; ++i )
+    {
+        for ( int j=0; j<8; ++j )
+        {
+            cout << hard_initial_value[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl << endl;
+}
 
 int count_flippable_pieces(int i, int j){
     int opposing_player = player*(-1);
@@ -815,7 +1073,7 @@ void one_player_mode(int initial_or_fromexitmenu){
             drawboard( );
             if(player==black) make_move();
             else {
-                Sleep(2000);
+                Sleep(1000);
                 if(ai_mode == 1)
                     easy_ai();
                 if(ai_mode == 2)
@@ -945,15 +1203,20 @@ void hard_ai(){
 
     int max = -10000, row = -1, col = -1, x , dummy_player = player;
 
+    //hard_x_square_value_update();
+    hard_c_square_value_update();
+
     for(int i=0;i<8; i++){
         for(int j=0;j<8;j++){
             player = dummy_player;
             x = 0;
             if(board[i][j].value==PLAYABLE){
 
+
+
                 x += hard_board_val(i,j);
 
-                cout << "Mobility = " <<hard_mobility(i,j) << endl;
+                x -= hard_mobility(i,j);
 
 
                 cout << "row: " << i << "  column: " << j << " x = " << x << endl;
