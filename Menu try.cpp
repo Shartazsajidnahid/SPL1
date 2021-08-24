@@ -219,9 +219,9 @@ int distance( int i1, int j1, int i2, int j2 )
 }
 
 
-
 int is_playable( int i, int j )
 {
+
     board[i][j].up = board[i][j].down = board[i][j].right = board[i][j].left =board[i][j].ul =board[i][j].ur =board[i][j].dl =board[i][j].dr= 0;
     if ( !is_valid_position( i, j ) ) return FALSE;
     if ( board[i][j].value != EMPTY ) return FALSE;
@@ -1319,20 +1319,20 @@ void computer_mode_menu_input(){
 
             ch=getch();
 
-            if(ch==F1)   // 1 player
+            if(ch==F1 || ch == '1' || ch =='E' || ch == 'e')    // 1 player
             {
                 cleardevice();
                 ai_mode = 1;
                 one_player_mode(0);
             }
-            else if(ch==F2)  // 2 player menu
+            else if(ch==F2 || ch == '2' || ch =='M' || ch == 'm')   // 2 player menu
             {
                 cleardevice();
                 ai_mode = 2;
                 one_player_mode(0);
 
             }
-            else if(ch==F3)  // 2 player menu
+            else if(ch==F3 || ch == '2' || ch =='H' || ch == 'h')   // 2 player menu
             {
                 cleardevice();
                 ai_mode = 3;
@@ -1341,7 +1341,7 @@ void computer_mode_menu_input(){
 
             }
 
-            else if(ch==ESC)
+            else if(ch==ESC  || ch =='B' || ch == 'b')
             {
 
                cleardevice();
@@ -1384,7 +1384,7 @@ void computer_mode_menu()
 	outtextxy(240,270,"BACK TO MAIN MENU");
 	line(240, 290, 250, 290);
 
-	outtextxy(160,340,"press  1,2,3  /  H,C,ESC  /  F1,F2,E  to continue . . . .");
+	outtextxy(120,340,"press  1,2,3,4  /  E,C,H,B  /  F1,F2,F3,ESC  to continue . . . .");
 
 
 	computer_mode_menu_input();
@@ -1405,12 +1405,12 @@ void menuinput(){
 
             ch=getch();
 
-            if(ch==F1)   // 2 player
+            if(ch==F1 || ch == '1' || ch =='H' || ch == 'h')   // 2 player
             {
                 cleardevice();
                 two_player_mode(0);
             }
-            else if(ch==F2)  // 1 player menu
+            else if(ch==F2 || ch == '2' || ch =='C' || ch == 'c')   // 1 player menu
             {
                 cleardevice();
 
@@ -1418,7 +1418,7 @@ void menuinput(){
 
             }
 
-            else if(ch==ESC)
+            else if(ch==ESC || ch == 'E' || ch =='e')
             {
                 exit_menu(-1);
                //exit(1);
@@ -1531,7 +1531,7 @@ void menu()
 	outtextxy(240,260,"EXIT");
 	line(240, 280, 250, 280);
 
-	outtextxy(160,340,"press  1,2,3  /  H,C,ESC  /  F1,F2,E  to continue . . . .");
+	outtextxy(160,340,"press  1,2,3  /  H,C,E  /  F1,F2,ESC  to continue . . . .");
 
 	menuinput();
 
