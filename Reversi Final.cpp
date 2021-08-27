@@ -1,5 +1,6 @@
 
 
+
 #include<graphics.h>
 #include<stdio.h>
 #include<iostream>
@@ -75,7 +76,7 @@ void drawboard()
     int left, top, right, bottom, x, y;
     char str[2];
 
-    setfillstyle(SOLID_FILL,RED); //coloring outside the Board
+    setfillstyle(SOLID_FILL,16); //coloring outside the Board
     rectangle(50,50,100,50);
     floodfill(25,75,WHITE);
 
@@ -153,14 +154,18 @@ void drawboard()
         }
     }
 
-    setcolor(WHITE);
+    setcolor(YELLOW);
     //showing scores
-    outtextxy(475, 175, "WHITE: ");
-    outtextxy(475, 200, "BLACK: ");
+    outtextxy(475, 140, "SCOREBOARD");
+    line(475, 158, 570, 158);
+    line(475, 160, 570, 160);
+    setcolor(WHITE);
+    outtextxy(475, 185, "WHITE: ");
+    outtextxy(475, 210, "BLACK: ");
     sprintf(str, "%d" , white_score);
-    outtextxy(550, 175 , str );
+    outtextxy(550, 185 , str );
     sprintf(str, "%d" , black_score);
-    outtextxy(550, 200 , str );
+    outtextxy(550, 210 , str );
 
 
     //more than 1 digit er ta thik kora lagbe
@@ -1332,7 +1337,7 @@ void computer_mode_menu_input(){
                 one_player_mode(0);
 
             }
-            else if(ch==F3 || ch == '2' || ch =='H' || ch == 'h')   // 2 player menu
+            else if(ch==F3 || ch == '3' || ch =='H' || ch == 'h')   // 2 player menu
             {
                 cleardevice();
                 ai_mode = 3;
@@ -1341,7 +1346,7 @@ void computer_mode_menu_input(){
 
             }
 
-            else if(ch==ESC  || ch =='B' || ch == 'b')
+            else if(ch==ESC  || ch == '4' || ch =='B' || ch == 'b')
             {
 
                cleardevice();
@@ -1359,7 +1364,7 @@ void computer_mode_menu()
 {
 
 
-    setfillstyle(SOLID_FILL,RED); //coloring outside the Board
+    setfillstyle(SOLID_FILL,16); //coloring outside the Board
 
     floodfill(25,75,WHITE);
 
@@ -1418,7 +1423,7 @@ void menuinput(){
 
             }
 
-            else if(ch==ESC || ch == 'E' || ch =='e')
+            else if(ch==ESC || ch == '3' || ch == 'E' || ch =='e')
             {
                 exit_menu(-1);
                //exit(1);
@@ -1437,10 +1442,10 @@ void display_winner()
 
 
 
-    setfillstyle(SOLID_FILL,RED); //coloring outside the Board
+    setfillstyle(SOLID_FILL,16); //coloring outside the Board
     floodfill(25,75,WHITE);
     setcolor(WHITE);
-    setbkcolor(RED);
+    setbkcolor(16);
     for(int i=0;i<7;i++)
 	rectangle(110-i,90-i,500+i,370+i);
 
@@ -1506,13 +1511,13 @@ void menu()
 {
 
     ai_mode = 0;
-    setfillstyle(SOLID_FILL,RED); //coloring outside the Board
+    setfillstyle(SOLID_FILL,16); //coloring outside the Board
 
     floodfill(25,75,WHITE);
 
     setcolor(WHITE);
 
-    setbkcolor(RED);
+    setbkcolor(16);
 
     for(int i=0;i<7;i++)
 	rectangle(110-i,90-i,500+i,370+i);
