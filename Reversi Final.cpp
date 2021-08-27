@@ -944,6 +944,28 @@ void hard_c_square_value_update(){
     cout << endl << endl;
 }
 
+void hard_x_square_value_update(){
+    if(board[0][0].value==white){
+        if(board[0][1].value==white && board[1][0].value==white){
+            hard_initial_value[1][1]+=30;
+        }
+    }
+    if(board[7][0].value==white){
+        if(board[7][1].value==white && board[6][0].value==white){
+            hard_initial_value[1][6]+=30;
+        }
+    }
+    if(board[0][7].value==white){
+        if(board[0][6].value==white && board[1][7].value==white){
+            hard_initial_value[1][1]+=30;
+        }
+    }
+    if(board[7][7].value==white){
+        if(board[6][7].value==white && board[7][6].value==white){
+            hard_initial_value[6][6]+=30;
+        }
+    }
+}
 
 int count_flippable_pieces(int i, int j){
     int opposing_player = player*(-1);
@@ -1206,7 +1228,7 @@ void hard_ai(){
 
     int max = -10000, row = -1, col = -1, x;
 
-    //hard_x_square_value_update();
+    hard_x_square_value_update();
     hard_c_square_value_update();
 
     for(int i=0;i<8; i++){
