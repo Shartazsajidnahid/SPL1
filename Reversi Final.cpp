@@ -1,6 +1,3 @@
-
-
-
 #include<graphics.h>
 #include<stdio.h>
 #include<iostream>
@@ -80,6 +77,8 @@ void drawboard()
     rectangle(50,50,100,50);
     floodfill(25,75,WHITE);
 
+
+
     left = 50;
     top = 50;
     right = 100;
@@ -154,12 +153,12 @@ void drawboard()
         }
     }
 
-    setcolor(YELLOW);
+
     //showing scores
     outtextxy(475, 140, "SCOREBOARD");
     line(475, 158, 570, 158);
     line(475, 160, 570, 160);
-    setcolor(WHITE);
+
     outtextxy(475, 185, "WHITE: ");
     outtextxy(475, 210, "BLACK: ");
     sprintf(str, "%d" , white_score);
@@ -952,12 +951,12 @@ void hard_x_square_value_update(){
     }
     if(board[7][0].value==white){
         if(board[7][1].value==white && board[6][0].value==white){
-            hard_initial_value[1][6]+=30;
+            hard_initial_value[6][1]+=30;
         }
     }
     if(board[0][7].value==white){
         if(board[0][6].value==white && board[1][7].value==white){
-            hard_initial_value[1][1]+=30;
+            hard_initial_value[1][6]+=30;
         }
     }
     if(board[7][7].value==white){
@@ -966,6 +965,7 @@ void hard_x_square_value_update(){
         }
     }
 }
+
 
 int count_flippable_pieces(int i, int j){
     int opposing_player = player*(-1);
@@ -1387,6 +1387,9 @@ void computer_mode_menu()
 
 
     setfillstyle(SOLID_FILL,16); //coloring outside the Board
+    outtextxy(270, 50, "REVERSI");
+    for(int i=0;i<2;i++)
+    rectangle(265-i,45-i,335-i,70-i);
 
     floodfill(25,75,WHITE);
 
@@ -1540,6 +1543,11 @@ void menu()
     setcolor(WHITE);
 
     setbkcolor(16);
+
+    outtextxy(270, 50, "REVERSI");
+    for(int i=0;i<2;i++)
+    rectangle(265-i,45-i,335-i,70-i);
+
 
     for(int i=0;i<7;i++)
 	rectangle(110-i,90-i,500+i,370+i);
