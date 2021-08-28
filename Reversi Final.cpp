@@ -1135,10 +1135,17 @@ void two_player_mode(int initial_or_fromexitmenu){
 
     if(!initial_or_fromexitmenu)initiate_board();
 
-    while (1)
+    while (!endgame)
     {
         mark_valid_moves();
-        if ( !has_move )
+        if ( has_move )
+        {
+            didnt_move = 0;
+            drawboard( );
+            take_move( );
+
+        }
+        else
         {
             if ( didnt_move )
             {
@@ -1149,14 +1156,8 @@ void two_player_mode(int initial_or_fromexitmenu){
             didnt_move = 1;
             player=player*-1;
         }
-        else
-        {
-            didnt_move = 0;
-            drawboard( );
-            take_move( );
-        }
 
-        if(endgame) break;
+
         cleardevice();
     }
 
