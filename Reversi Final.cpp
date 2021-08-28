@@ -38,6 +38,7 @@ void easy_ai();
 void medium_ai();
 void hard_ai();
 void exit_menu(int x);
+int count_flippable_pieces(int i, int j);
 void two_player_mode(int initial_or_fromexitmenu);
 void one_player_mode(int initial_or_fromexitmenu);
 void display_winner();
@@ -104,6 +105,7 @@ void drawboard()
         bottom+=50;
     }
 
+    /*
     for(int i =0; i<8; i++)
     {
         for(int j = 0; j<8; j++)
@@ -112,8 +114,9 @@ void drawboard()
         }
         cout << endl;
     }
+    */
 
-    cout << endl<< endl;
+   // cout << endl<< endl;
     white_score = 0;
     black_score = 0;
 
@@ -296,7 +299,7 @@ void take_move( )
             else if(ch=='f' || ch == 'F' || ch == '\r')
             {
 
-                cout << endl << " p = " << p << " q =" << q << " m =" << m << " n =" << n << endl;
+                //cout << endl << " p = " << p << " q =" << q << " m =" << m << " n =" << n << endl;
                 if(board[n][m].value ==Valid)
                 {
                     break;
@@ -343,7 +346,7 @@ void take_move( )
     column = (x-25)/50;
     row--;
     column--;
-    cout << endl << " x = " << x << " y =" << y << " row =" << row << " column =" << column << endl;
+    //cout << endl << " x = " << x << " y =" << y << " row =" << row << " column =" << column << endl;
     if ( inboard_or_not( row, column ) && board[row][column].value == Valid )
     {
         board[row][column].value = player;
@@ -461,7 +464,6 @@ int hard_board_val(int i, int j){
     return count;
 }
 
-
 void hard_mobility(int i, int j){
     mobility_playable = 0;
 
@@ -515,7 +517,7 @@ void hard_c_square_value_update(){
     if(board[0][0].value!=0){
 
         if(board[0][0].value==white){
-            cout << "yes 1 ";
+           // cout << "yes 1 ";
             if(hard_initial_value[0][1]==-8){
                 hard_initial_value[0][1]+=18;
             }
@@ -577,9 +579,9 @@ void hard_c_square_value_update(){
     }
 
     if(board[7][0].value!=0){
-        cout << "YA 2" << endl;
+       // cout << "YA 2" << endl;
         if(board[7][0].value==white){
-            cout << "yes 1 ";
+           // cout << "yes 1 ";
             if(hard_initial_value[7][1]==-8){
                 hard_initial_value[7][1]+=18;
             }
@@ -641,9 +643,9 @@ void hard_c_square_value_update(){
     }
 
     if(board[0][7].value!=0){
-        cout << "YA 3" << endl;
+        //cout << "YA 3" << endl;
         if(board[0][7].value==white){
-            cout << "yes 1 ";
+           // cout << "yes 1 ";
             if(hard_initial_value[0][6]==-8){
                 hard_initial_value[0][6]+=18;
             }
@@ -705,9 +707,9 @@ void hard_c_square_value_update(){
     }
 
     if(board[7][7].value!=0){
-        cout << "YA 4" << endl;
+       // cout << "YA 4" << endl;
         if(board[7][7].value==white){
-            cout << "yes 1 ";
+          //  cout << "yes 1 ";
             if(hard_initial_value[6][7]==-8){
                 hard_initial_value[6][7]+=18;
             }
@@ -768,16 +770,31 @@ void hard_c_square_value_update(){
         }
     }
 
-    for ( int i=0; i<8; ++i )
-    {
-        for ( int j=0; j<8; ++j )
-        {
-            cout << hard_initial_value[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
+   // for ( int i=0; i<8; ++i )
+   // {
+     //   for ( int j=0; j<8; ++j )
+      //  {
+           // cout << hard_initial_value[i][j] << " ";
+      //  }
+        //cout << endl;
+   // }
+    //cout << endl << endl;
 }
+
+
+int how_many_corners(){
+    if(board[0][0].value == black || board[0][0].value == white)
+        return 1;
+    else if(board[0][7].value == black|| board[0][7].value == white)
+        return 1;
+    else if(board[7][0].value == black|| board[7][0].value == white)
+        return 1;
+    else if(board[7][7].value == black|| board[7][7].value == white)
+        return 1;
+    else return 0;
+
+}
+
 
 void hard_x_square_value_update(){
     if(board[0][0].value==white){
@@ -800,6 +817,14 @@ void hard_x_square_value_update(){
             hard_initial_value[6][6]+=30;
         }
     }
+}
+
+
+int hard_minimum_or_maximum(int i, int j){
+    if(black_score+white_score >44 || how_many_corners()<1){
+         return (-1)*count_flippable_pieces(i,j);
+    }
+    else return 0;
 }
 
 
@@ -1014,6 +1039,7 @@ int valid_or_not( int i, int j )
     return playable_or_not;
 }
 
+
 void reset_valid(){
 
     for ( int i=0; i<8; ++i )
@@ -1021,11 +1047,12 @@ void reset_valid(){
         for ( int j=0; j<8; ++j )
         {
             if ( board[i][j].value == Valid )
-                board[i][j].value = EMPTY;
+                 board[i][j].value = EMPTY;
         }
     }
 
 }
+
 
 void mark_valid_moves()
 {
@@ -1118,6 +1145,7 @@ void one_player_mode(int initial_or_fromexitmenu){
                 drawboard();
                 continue;
             }
+            //cout << endl << "skikpper " << endl;
             didnt_move = 1;
             player=player*-1;
 
@@ -1185,7 +1213,7 @@ void easy_ai(){
     int random = randomfunc(count);
     count = 0;
 
-    cout << random << endl;
+    //cout << random << endl;
 
     for(int i=0;i<8; i++){
 
@@ -1202,7 +1230,7 @@ void easy_ai(){
         }
     }
 
-    cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
+    //cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
 
     board[row][col].value = player;
     reverse_disks( row,  col );
@@ -1220,10 +1248,10 @@ void medium_ai(){
     for(int i=0;i<8; i++){
         for(int j=0;j<8;j++){
             if(board[i][j].value==Valid){
-                cout << " HEY ";
+                // << " HEY ";
                 x = count_flippable_pieces(i,j);
 
-                cout << "row: " << i << "  column: " << j << " x = " << x << endl;
+               // cout << "row: " << i << "  column: " << j << " x = " << x << endl;
 
                 if(x>max){
                     max = x;
@@ -1233,7 +1261,7 @@ void medium_ai(){
             }
         }
     }
-    cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
+    //cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
 
     board[row][col].value = player;
     reverse_disks( row,  col );
@@ -1248,6 +1276,7 @@ void hard_ai(){
     int max = -10000, row = -1, col = -1, x;
 
     hard_x_square_value_update();
+
     hard_c_square_value_update();
 
     for(int i=0;i<8; i++){
@@ -1260,24 +1289,30 @@ void hard_ai(){
                 x += hard_board_val(i,j);
                 hard_mobility(i,j);
                 x -= mobility_playable;
+                x += hard_minimum_or_maximum(i,j);
 
-
-                cout << "row: " << i << "  column: " << j << " x = " << x << endl;
+                //cout << "row: " << i << "  column: " << j << " x = " << x << endl;
 
                 if(x>max){
+
                     max = x;
                     row = i;
                     col = j;
                 }
+                else if(x == max ){
+                    if(hard_board_val(i,j)>hard_board_val(row,col)){
+                        row = i;
+                        col = j;
+                    }
+                }
             }
         }
     }
-    cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
+   // cout << "AI turn: " << endl << "row: " << row << "  column: " << col << endl;
 
     board[row][col].value = player;
     reverse_disks( row,  col );
     player = player*(-1);
-
 
 }
 
