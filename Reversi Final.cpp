@@ -10,11 +10,8 @@ using namespace std;
 
 #define black 1
 #define white (-1)
-#define PLAYABLE 2
+#define Valid 2
 #define EMPTY 0
-#define TRUE 1
-#define FALSE 0
-
 #define ESC         27
 #define UP_ARROW    72
 #define LEFT_ARROW  75
@@ -26,8 +23,15 @@ using namespace std;
 #define F4          62
 #define F5          63
 
-
-
+void drawboard();
+void initiate_board();
+int inboard_or_not( int i, int j );
+int distance( int i1, int j1, int i2, int j2 );
+int valid_or_not( int i, int j );
+void reset_valid();
+void mark_valid_moves();
+void reverse_disks(int i, int j);
+void take_move( );
 void computer_mode_menu();
 void menu();
 void easy_ai();
@@ -59,10 +63,9 @@ struct Board dummy_board[8][8];
 
 int  player;
 int white_score =2, black_score = 2;
-int game_ended = FALSE;
-int skipped_turn = FALSE;
-int wrong_move = FALSE;
-int has_valid_move = FALSE;
+int endgame, didnt_move;
+
+int has_move;
 int ai_mode = 0;
 int mobility_playable=0;
 
@@ -120,7 +123,7 @@ void drawboard()
         {
             if(board[i][j].value==black) black_score++;
             if(board[i][j].value==white)  white_score++;
-            if(board[i][j].value==black || board[i][j].value== white || board[i][j].value == PLAYABLE)
+            if(board[i][j].value==black || board[i][j].value== white || board[i][j].value == Valid)
             {
                 x=i+1;
                 y=j+1;
@@ -141,7 +144,7 @@ void drawboard()
                     circle(y, x , 17);
                     floodfill(y,x,LIGHTGRAY);
                 }
-                else if (board[i][j].value==PLAYABLE)
+                else if (board[i][j].value==Valid)
                 {
                     setcolor(WHITE);
                     setfillstyle(SOLID_FILL, GREEN);
@@ -155,6 +158,7 @@ void drawboard()
 
 
     //showing scores
+    setcolor(WHITE);
     outtextxy(475, 140, "SCOREBOARD");
     line(475, 158, 570, 158);
     line(475, 160, 570, 160);
@@ -187,272 +191,6 @@ void drawboard()
 
 }
 
-
-void initiate_board()
-{
-    white_score =2;
-    black_score = 2;
-    game_ended = FALSE;
-    skipped_turn = FALSE;
-    wrong_move = FALSE;
-    has_valid_move = FALSE;
-
-
-    for(int i=0; i<8; i++)
-    {
-        for(int j=0; j<8; j++)
-            board[i][j].value = 0;
-    }
-    board[4][3].value =black;
-    board[3][4].value = black;
-    board[4][4].value = white;
-    board[3][3].value = white;
-    player = black;
-}
-
-int inboard_or_not( int i, int j )
-{
-    if ( i < 0 || i >= 8 || j < 0 || j >= 8 ) return FALSE;
-    return TRUE;
-}
-
-int distance( int i1, int j1, int i2, int j2 )
-{
-    int distance1 = abs( i1 - i2 ), distance2 = abs( j1 - j2 );
-    if ( distance1 > 0 ) return distance1;
-    return distance2;
-}
-
-
-int playable_or_not( int i, int j )
-{
-
-    board[i][j].up = board[i][j].down = board[i][j].right = board[i][j].left =board[i][j].ul =board[i][j].ur =board[i][j].dl =board[i][j].dr= 0;
-    if ( !inboard_or_not( i, j ) ) return FALSE;
-    if ( board[i][j].value != EMPTY ) return FALSE;
-    int playable = FALSE;
-
-    int opponent = player*(-1);
-
-    // Test UL diagonal
-    int i_it = i-1, j_it = j-1;
-    while ( inboard_or_not( i_it, j_it ) && board[i_it][j_it].value == opponent )
-    {
-        i_it -= 1;
-        j_it -= 1;
-    }
-    if ( inboard_or_not( i_it, j_it ) && distance( i, j, i_it, j_it ) > 1 && board[i_it][j_it].value == player )
-    {
-        board[i][j].ul = 1;
-        playable = TRUE;
-    }
-
-    // Test UP path
-    i_it = i-1, j_it = j;
-    while ( inboard_or_not( i_it, j_it ) && board[i_it][j_it].value == opponent )
-        i_it -= 1;
-
-    if ( inboard_or_not( i_it, j_it ) && distance( i, j, i_it, j_it ) > 1 && board[i_it][j_it].value == player )
-    {
-        board[i][j].up = 1;
-        playable = TRUE;
-    }
-
-    // Test UR diagonal
-    i_it = i-1, j_it = j+1;
-    while ( inboard_or_not( i_it, j_it ) && board[i_it][j_it].value == opponent )
-    {
-        i_it -= 1;
-        j_it += 1;
-    }
-    if ( inboard_or_not( i_it, j_it ) && distance( i, j, i_it, j_it ) > 1 && board[i_it][j_it].value == player )
-    {
-        board[i][j].ur = 1;
-        playable = TRUE;
-    }
-
-    // Test LEFT path
-    i_it = i, j_it = j-1;
-    while ( inboard_or_not( i_it, j_it ) && board[i_it][j_it].value == opponent )
-        j_it -= 1;
-
-    if ( inboard_or_not( i_it, j_it ) && distance( i, j, i_it, j_it ) > 1 && board[i_it][j_it].value == player )
-    {
-        board[i][j].left = 1;
-        playable = TRUE;
-    }
-
-    // Test RIGHT path
-    i_it = i, j_it = j+1;
-    while ( inboard_or_not( i_it, j_it ) && board[i_it][j_it].value == opponent )
-        j_it += 1;
-
-    if ( inboard_or_not( i_it, j_it ) && distance( i, j, i_it, j_it ) > 1 && board[i_it][j_it].value == player )
-    {
-        board[i][j].right = 1;
-        playable = TRUE;
-    }
-
-    // Test DL diagonal
-    i_it = i+1, j_it = j-1;
-    while ( inboard_or_not( i_it, j_it ) && board[i_it][j_it].value == opponent )
-    {
-        i_it += 1;
-        j_it -= 1;
-    }
-    if ( inboard_or_not( i_it, j_it ) && distance( i, j, i_it, j_it ) > 1 && board[i_it][j_it].value == player )
-    {
-        board[i][j].dl = 1;
-        playable = TRUE;
-    }
-
-    // Test DOWN path
-    i_it = i+1, j_it = j;
-    while ( inboard_or_not( i_it, j_it ) && board[i_it][j_it].value == opponent )
-        i_it += 1;
-
-    if ( inboard_or_not( i_it, j_it ) && distance( i, j, i_it, j_it ) > 1 && board[i_it][j_it].value == player )
-    {
-        board[i][j].down = 1;
-        playable = TRUE;
-    }
-
-    // Test DR diagonal
-    i_it = i+1, j_it = j+1;
-    while ( inboard_or_not( i_it, j_it ) && board[i_it][j_it].value == opponent )
-    {
-        i_it += 1;
-        j_it += 1;
-    }
-    if ( inboard_or_not( i_it, j_it ) && distance( i, j, i_it, j_it ) > 1 && board[i_it][j_it].value == player )
-    {
-        board[i][j].dr = 1;
-        playable = TRUE;
-    }
-    return playable;
-}
-
-
-void playable_options()
-{
-    has_valid_move = FALSE;
-    for ( int i=0; i<8; ++i )
-    {
-        for ( int j=0; j<8; ++j )
-        {
-            if ( board[i][j].value == PLAYABLE )
-                board[i][j].value = EMPTY;
-            if ( playable_or_not( i, j ) )
-            {
-                board[i][j].value = PLAYABLE;
-                has_valid_move = TRUE;
-                mobility_playable++;
-            }
-        }
-    }
-}
-
-
-
-void reverse_disks( int i, int j )
-{
-    int opponent = player*(-1);
-    int i_it, j_it;
-
-    //  UL diagonal
-    if ( board[i][j].ul )
-    {
-        i_it = i-1, j_it = j-1;
-        while ( board[i_it][j_it].value == opponent )
-        {
-            board[i_it][j_it].value = player;
-            i_it -= 1;
-            j_it -= 1;
-        }
-    }
-
-    //  UP
-    if ( board[i][j].up )
-    {
-        i_it = i-1, j_it = j;
-        while ( board[i_it][j_it].value == opponent )
-        {
-            board[i_it][j_it].value = player;
-            i_it -= 1;
-        }
-    }
-
-    //  UR diagonal
-    if ( board[i][j].ur )
-    {
-        i_it = i-1, j_it = j+1;
-        while ( board[i_it][j_it].value == opponent )
-        {
-            board[i_it][j_it].value = player;
-            i_it -= 1;
-            j_it += 1;
-        }
-    }
-
-    //  LEFT
-    if ( board[i][j].left )
-    {
-        i_it = i, j_it = j-1;
-        while ( board[i_it][j_it].value == opponent )
-        {
-            board[i_it][j_it].value = player;
-            j_it -= 1;
-        }
-    }
-
-    //  RIGHT
-    if ( board[i][j].right )
-    {
-        i_it = i, j_it = j+1;
-        while ( board[i_it][j_it].value == opponent )
-        {
-            board[i_it][j_it].value = player;
-            j_it += 1;
-        }
-    }
-
-    //  DL
-    if ( board[i][j].dl )
-    {
-        i_it = i+1, j_it = j-1;
-        while ( board[i_it][j_it].value == opponent )
-        {
-            board[i_it][j_it].value = player;
-            i_it += 1;
-            j_it -= 1;
-        }
-    }
-
-    //  DOWN
-    if ( board[i][j].down )
-    {
-        i_it = i+1, j_it = j;
-        while ( board[i_it][j_it].value == opponent )
-        {
-            board[i_it][j_it].value = player;
-            i_it += 1;
-        }
-    }
-
-    //  DR diagonal
-    if ( board[i][j].dr )
-    {
-        i_it = i+1, j_it = j+1;
-        while ( board[i_it][j_it].value == opponent )
-        {
-            board[i_it][j_it].value = player;
-            i_it += 1;
-            j_it += 1;
-        }
-    }
-}
-
-
 void turn_white_plus_into_green()
 {
     int x, y;
@@ -460,7 +198,7 @@ void turn_white_plus_into_green()
     {
         for(int j = 0; j<8; j++)
         {
-            if( board[i][j].value == PLAYABLE)
+            if( board[i][j].value == Valid)
             {
                 x=i+1;
                 y=j+1;
@@ -476,8 +214,7 @@ void turn_white_plus_into_green()
     }
 }
 
-
-void make_move( )
+void take_move( )
 {
     int x = 275, y = 275, p, q, m, n;
     int row, column;
@@ -513,7 +250,7 @@ void make_move( )
             setfillstyle(SOLID_FILL,YELLOW);
             floodfill(x-20 ,y-20,WHITE);
         }
-        else if(board[n][m].value==PLAYABLE)
+        else if(board[n][m].value==Valid)
         {
             setfillstyle(SOLID_FILL,YELLOW);
             floodfill(x-20 ,y-20,WHITE);
@@ -560,7 +297,7 @@ void make_move( )
             {
 
                 cout << endl << " p = " << p << " q =" << q << " m =" << m << " n =" << n << endl;
-                if(board[n][m].value ==PLAYABLE)
+                if(board[n][m].value ==Valid)
                 {
                     break;
                 }
@@ -592,7 +329,7 @@ void make_move( )
                     setfillstyle(SOLID_FILL,GREEN);
                     floodfill(p-20 ,q-20,WHITE);
                 }
-                else if(board[n][m].value==PLAYABLE)
+                else if(board[n][m].value==Valid)
                 {
                     setcolor(WHITE);
                     setfillstyle(SOLID_FILL, GREEN);
@@ -607,16 +344,115 @@ void make_move( )
     row--;
     column--;
     cout << endl << " x = " << x << " y =" << y << " row =" << row << " column =" << column << endl;
-    if ( inboard_or_not( row, column ) && board[row][column].value == PLAYABLE )
+    if ( inboard_or_not( row, column ) && board[row][column].value == Valid )
     {
         board[row][column].value = player;
         reverse_disks( row, column );
         player = player*(-1);
     }
-    else wrong_move = TRUE;
+
     turn_white_plus_into_green();
 
 
+}
+
+
+void reverse_disks( int i, int j )
+{
+    int opponent = player*(-1);
+    int temp_row, temp_col;
+
+    //  UL diagonal
+    if ( board[i][j].ul == 1 )
+    {
+        temp_row = i-1, temp_col = j-1;
+        while ( board[temp_row][temp_col].value == opponent )
+        {
+            board[temp_row][temp_col].value = player;
+            temp_row -= 1;
+            temp_col -= 1;
+        }
+    }
+
+    //  UP
+    if ( board[i][j].up == 1)
+    {
+        temp_row = i-1, temp_col = j;
+        while ( board[temp_row][temp_col].value == opponent )
+        {
+            board[temp_row][temp_col].value = player;
+            temp_row -= 1;
+        }
+    }
+
+    //  UR diagonal
+    if ( board[i][j].ur == 1 )
+    {
+        temp_row = i-1, temp_col = j+1;
+        while ( board[temp_row][temp_col].value == opponent )
+        {
+            board[temp_row][temp_col].value = player;
+            temp_row -= 1;
+            temp_col += 1;
+        }
+    }
+
+    //  LEFT
+    if ( board[i][j].left == 1 )
+    {
+        temp_row = i, temp_col = j-1;
+        while ( board[temp_row][temp_col].value == opponent )
+        {
+            board[temp_row][temp_col].value = player;
+            temp_col -= 1;
+        }
+    }
+
+    //  RIGHT
+    if ( board[i][j].right== 1 )
+    {
+        temp_row = i, temp_col = j+1;
+        while ( board[temp_row][temp_col].value == opponent )
+        {
+            board[temp_row][temp_col].value = player;
+            temp_col += 1;
+        }
+    }
+
+    //  DL
+    if ( board[i][j].dl == 1 )
+    {
+        temp_row = i+1, temp_col = j-1;
+        while ( board[temp_row][temp_col].value == opponent )
+        {
+            board[temp_row][temp_col].value = player;
+            temp_row += 1;
+            temp_col -= 1;
+        }
+    }
+
+    //  DOWN
+    if ( board[i][j].down == 1 )
+    {
+        temp_row = i+1, temp_col = j;
+        while ( board[temp_row][temp_col].value == opponent )
+        {
+            board[temp_row][temp_col].value = player;
+            temp_row += 1;
+        }
+    }
+
+    //  DR diagonal
+    if ( board[i][j].dr == 1 )
+    {
+        temp_row = i+1, temp_col = j+1;
+        while ( board[temp_row][temp_col].value == opponent )
+        {
+            board[temp_row][temp_col].value = player;
+            temp_row += 1;
+            temp_col += 1;
+        }
+    }
 }
 
 
@@ -651,7 +487,7 @@ void hard_mobility(int i, int j){
 
     reverse_disks( i,  j );
     player = player*(-1);
-    playable_options();
+    mark_valid_moves();
     player = player*(-1);
 
 
@@ -968,89 +804,89 @@ void hard_x_square_value_update(){
 
 
 int count_flippable_pieces(int i, int j){
-    int opposing_player = player*(-1);
-    int i_it, j_it , total_flippable_piece=0;
+    int opponent = player*(-1);
+    int temp_row, temp_col , total_flippable_piece=0;
 
     if ( board[i][j].ul )
     {
-        i_it = i-1, j_it = j-1;
-        while ( board[i_it][j_it].value == opposing_player )
+        temp_row = i-1, temp_col = j-1;
+        while ( board[temp_row][temp_col].value == opponent )
         {
             total_flippable_piece++;
-            i_it -= 1;
-            j_it -= 1;
+            temp_row -= 1;
+            temp_col -= 1;
         }
     }
     if ( board[i][j].up )
     {
-        i_it = i-1, j_it = j;
-        while ( board[i_it][j_it].value == opposing_player )
+        temp_row = i-1, temp_col = j;
+        while ( board[temp_row][temp_col].value == opponent )
         {
             total_flippable_piece++;
-            i_it -= 1;
+            temp_row -= 1;
         }
     }
 
     if ( board[i][j].ur )
     {
-        i_it = i-1, j_it = j+1;
-        while ( board[i_it][j_it].value == opposing_player )
+        temp_row = i-1, temp_col = j+1;
+        while ( board[temp_row][temp_col].value == opponent )
         {
             total_flippable_piece++;
-            i_it -= 1;
-            j_it += 1;
+            temp_row -= 1;
+            temp_col += 1;
         }
     }
 
     if ( board[i][j].left )
     {
-        i_it = i, j_it = j-1;
-        while ( board[i_it][j_it].value == opposing_player )
+        temp_row = i, temp_col = j-1;
+        while ( board[temp_row][temp_col].value == opponent )
         {
             total_flippable_piece++;
-            j_it -= 1;
+            temp_col -= 1;
         }
     }
 
     if ( board[i][j].right )
     {
-        i_it = i, j_it = j+1;
-        while ( board[i_it][j_it].value == opposing_player )
+        temp_row = i, temp_col = j+1;
+        while ( board[temp_row][temp_col].value == opponent )
         {
             total_flippable_piece++;
-            j_it += 1;
+            temp_col += 1;
         }
     }
 
     if ( board[i][j].dl )
     {
-        i_it = i+1, j_it = j-1;
-        while ( board[i_it][j_it].value == opposing_player )
+        temp_row = i+1, temp_col = j-1;
+        while ( board[temp_row][temp_col].value == opponent )
         {
             total_flippable_piece++;
-            i_it += 1;
-            j_it -= 1;
+            temp_row += 1;
+            temp_col -= 1;
         }
     }
 
     if ( board[i][j].down )
     {
-        i_it = i+1, j_it = j;
-        while ( board[i_it][j_it].value == opposing_player )
+        temp_row = i+1, temp_col = j;
+        while ( board[temp_row][temp_col].value == opponent )
         {
             total_flippable_piece++;
-            i_it += 1;
+            temp_row += 1;
         }
     }
 
     if ( board[i][j].dr )
     {
-        i_it = i+1, j_it = j+1;
-        while ( board[i_it][j_it].value == opposing_player )
+        temp_row = i+1, temp_col = j+1;
+        while ( board[temp_row][temp_col].value == opponent )
         {
             total_flippable_piece++;
-            i_it += 1;
-            j_it += 1;
+            temp_row += 1;
+            temp_col += 1;
         }
     }
 
@@ -1073,32 +909,199 @@ int randomfunc(int count){
 }
 
 
+int valid_or_not( int i, int j )
+{
+
+    board[i][j].up = board[i][j].down = board[i][j].right = board[i][j].left =board[i][j].ul =board[i][j].ur =board[i][j].dl =board[i][j].dr= 0;
+
+    int playable_or_not = 0, opponent = player*(-1);
+
+    // Test UL diagonal
+    int temp_row = i-1, temp_col = j-1;
+    while (board[temp_row][temp_col].value == opponent && inboard_or_not( temp_row, temp_col ))
+    {
+        temp_row -= 1;
+        temp_col -= 1;
+    }
+    if (  board[temp_row][temp_col].value == player && inboard_or_not( temp_row, temp_col ) && distance( i, j, temp_row, temp_col ) > 1  )
+    {
+        board[i][j].ul = 1;
+        playable_or_not = 1;
+    }
+
+    // Test UP path
+    temp_row = i-1, temp_col = j;
+    while (board[temp_row][temp_col].value == opponent && inboard_or_not( temp_row, temp_col ))
+        temp_row -= 1;
+
+    if (  board[temp_row][temp_col].value == player && inboard_or_not( temp_row, temp_col ) && distance( i, j, temp_row, temp_col ) > 1  )
+    {
+        board[i][j].up = 1;
+        playable_or_not = 1;
+    }
+
+    // Test UR diagonal
+    temp_row = i-1, temp_col = j+1;
+    while (board[temp_row][temp_col].value == opponent && inboard_or_not( temp_row, temp_col ))
+    {
+        temp_row -= 1;
+        temp_col += 1;
+    }
+    if (  board[temp_row][temp_col].value == player && inboard_or_not( temp_row, temp_col ) && distance( i, j, temp_row, temp_col ) > 1  )
+    {
+        board[i][j].ur = 1;
+        playable_or_not = 1;
+    }
+
+    // Test LEFT path
+    temp_row = i, temp_col = j-1;
+    while (board[temp_row][temp_col].value == opponent && inboard_or_not( temp_row, temp_col ))
+        temp_col -= 1;
+
+    if (  board[temp_row][temp_col].value == player && inboard_or_not( temp_row, temp_col ) && distance( i, j, temp_row, temp_col ) > 1  )
+    {
+        board[i][j].left = 1;
+        playable_or_not = 1;
+    }
+
+    // Test RIGHT path
+    temp_row = i, temp_col = j+1;
+    while (board[temp_row][temp_col].value == opponent && inboard_or_not( temp_row, temp_col ))
+        temp_col += 1;
+
+    if (  board[temp_row][temp_col].value == player && inboard_or_not( temp_row, temp_col ) && distance( i, j, temp_row, temp_col ) > 1  )
+    {
+        board[i][j].right = 1;
+        playable_or_not = 1;
+    }
+
+    // Test DL diagonal
+    temp_row = i+1, temp_col = j-1;
+    while (board[temp_row][temp_col].value == opponent && inboard_or_not( temp_row, temp_col ))
+    {
+        temp_row += 1;
+        temp_col -= 1;
+    }
+    if (  board[temp_row][temp_col].value == player && inboard_or_not( temp_row, temp_col ) && distance( i, j, temp_row, temp_col ) > 1  )
+    {
+        board[i][j].dl = 1;
+        playable_or_not = 1;
+    }
+
+    // Test DOWN path
+    temp_row = i+1, temp_col = j;
+    while (board[temp_row][temp_col].value == opponent && inboard_or_not( temp_row, temp_col ))
+        temp_row += 1;
+
+    if (  board[temp_row][temp_col].value == player && inboard_or_not( temp_row, temp_col ) && distance( i, j, temp_row, temp_col ) > 1  )
+    {
+        board[i][j].down = 1;
+        playable_or_not = 1;
+    }
+
+    // Test DR diagonal
+    temp_row = i+1, temp_col = j+1;
+    while (board[temp_row][temp_col].value == opponent && inboard_or_not( temp_row, temp_col ))
+    {
+        temp_row += 1;
+        temp_col += 1;
+    }
+    if (  board[temp_row][temp_col].value == player && inboard_or_not( temp_row, temp_col ) && distance( i, j, temp_row, temp_col ) > 1  )
+    {
+        board[i][j].dr = 1;
+        playable_or_not = 1;
+    }
+    return playable_or_not;
+}
+
+void reset_valid(){
+
+    for ( int i=0; i<8; ++i )
+    {
+        for ( int j=0; j<8; ++j )
+        {
+            if ( board[i][j].value == Valid )
+                board[i][j].value = EMPTY;
+        }
+    }
+
+}
+
+void mark_valid_moves()
+{
+    has_move = 0;
+    reset_valid();
+
+    for ( int i=0; i<8; ++i )
+    {
+        for ( int j=0; j<8; ++j )
+        {
+            if ( board[i][j].value == EMPTY ){
+                if ( valid_or_not( i, j ) )
+                {
+                    board[i][j].value = Valid;
+                    has_move = 1;
+                    mobility_playable++;
+                }
+            }
+
+        }
+    }
+}
+
+
+int inboard_or_not( int i, int j )
+{
+    if ( i < 0 || i >= 8 || j < 0 || j >= 8 ) return 0;
+    return 1;
+}
+
+
+int distance( int i1, int j1, int i2, int j2 )
+{
+    int distance1 = abs( i1 - i2 ), distance2 = abs( j1 - j2 );
+    if ( distance1 > 0 ) return distance1;
+    else return distance2;
+}
+
+
+
+void initiate_board()
+{
+    white_score = 2;
+    black_score = 2;
+    endgame = 0;
+    didnt_move = 0;
+    has_move = 0;
+
+
+    for(int i=0; i<8; i++)
+    {
+        for(int j=0; j<8; j++)
+            board[i][j].value = 0;
+    }
+    board[4][3].value =black;
+    board[3][4].value = black;
+    board[4][4].value = white;
+    board[3][3].value = white;
+    player = black;
+}
+
+
 void one_player_mode(int initial_or_fromexitmenu){
     if(!initial_or_fromexitmenu)initiate_board();
 
 
-    while ( !game_ended )
+    while ( !endgame )
     {
-        playable_options();
-        if ( !has_valid_move )
-        {
-            if ( skipped_turn )
-            {
-                game_ended = 1;
-                drawboard();
-                continue;
-            }
-            skipped_turn = 1;
-            player=player*-1;
+        mark_valid_moves();
 
-        }
-        else
-        {
-            skipped_turn = 0;
+        if(has_move){
+            didnt_move = 0;
             drawboard( );
-            if(player==black) make_move();
+            if(player==black) take_move();
             else {
-                //Sleep(1000);
+                Sleep(1000);
                 if(ai_mode == 1)
                     easy_ai();
                 if(ai_mode == 2)
@@ -1107,6 +1110,19 @@ void one_player_mode(int initial_or_fromexitmenu){
                     hard_ai();
             }
         }
+        else{
+
+            if ( didnt_move )
+            {
+                endgame = 1;
+                drawboard();
+                continue;
+            }
+            didnt_move = 1;
+            player=player*-1;
+
+        }
+
         cleardevice();
 
     }
@@ -1119,30 +1135,32 @@ void two_player_mode(int initial_or_fromexitmenu){
 
     if(!initial_or_fromexitmenu)initiate_board();
 
-    while ( !game_ended )
+    while (1)
     {
-        playable_options();
-        if ( !has_valid_move )
+        mark_valid_moves();
+        if ( !has_move )
         {
-            if ( skipped_turn )
+            if ( didnt_move )
             {
-                game_ended = 1;
+                endgame = 1;
                 drawboard( );
                 continue;
             }
-            skipped_turn = 1;
+            didnt_move = 1;
             player=player*-1;
         }
         else
         {
-            skipped_turn = 0;
+            didnt_move = 0;
             drawboard( );
-            make_move( );
+            take_move( );
         }
+
+        if(endgame) break;
         cleardevice();
     }
 
-     cleardevice();
+    cleardevice();
     display_winner();
 
 }
@@ -1156,7 +1174,7 @@ void easy_ai(){
 
         for(int j=0;j<8;j++){
 
-            if(board[i][j].value==PLAYABLE){
+            if(board[i][j].value==Valid){
                 count++;
 
             }
@@ -1172,7 +1190,7 @@ void easy_ai(){
 
         for(int j=0;j<8;j++){
 
-            if(board[i][j].value==PLAYABLE){
+            if(board[i][j].value==Valid){
                 count++;
                 if(count == random){
                     row = i;
@@ -1200,7 +1218,7 @@ void medium_ai(){
 
     for(int i=0;i<8; i++){
         for(int j=0;j<8;j++){
-            if(board[i][j].value==PLAYABLE){
+            if(board[i][j].value==Valid){
                 cout << " HEY ";
                 x = count_flippable_pieces(i,j);
 
@@ -1235,7 +1253,7 @@ void hard_ai(){
         for(int j=0;j<8;j++){
 
             x = 0;
-            if(board[i][j].value==PLAYABLE){
+            if(board[i][j].value==Valid){
 
 
                 x += hard_board_val(i,j);
@@ -1292,12 +1310,12 @@ void exit_menu_input(int menu_or_game){
                     menu();
                 else if(menu_or_game==0){
                     drawboard();
-                    make_move();
+                    take_move();
                     two_player_mode(1);
                 }
                 else if(menu_or_game>0){
                     drawboard();
-                    make_move();
+                    take_move();
                     one_player_mode(1);
                 }
 
